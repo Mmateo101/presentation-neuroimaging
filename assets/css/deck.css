@@ -113,7 +113,7 @@
 #metodo .mp{position:absolute;left:128px;right:128px;top:420px;bottom:120px;display:flex;flex-wrap:wrap;gap:40px 60px;align-content:flex-start;opacity:0;transform:translateY(24px);pointer-events:none;transition:opacity .6s,transform .7s cubic-bezier(.2,.8,.2,1)}
 #metodo .mp.on{opacity:1;transform:none;pointer-events:auto}
 #metodo .col{flex:1;min-width:600px}
-#metodo h4{font:600 24px var(--mono);letter-spacing:3px;text-transform:uppercase;color:var(--sky);margin:0 0 16px}
+#metodo h3{font:600 24px var(--mono);letter-spacing:3px;text-transform:uppercase;color:var(--sky);margin:0 0 16px}
 #metodo p{font-size:29px;line-height:1.45;color:var(--dim);margin:0 0 12px}
 #metodo p b{color:#fff}
 #metodo code{display:inline-block;margin-top:10px;font:500 25px var(--mono);color:#F2B84B;background:#14161A;border-radius:12px;padding:14px 20px}
@@ -123,7 +123,7 @@
 #metodo .note.top{font-size:28px}
 #metodo .models{flex-basis:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:30px}
 #metodo .mdl{background:#2A2D33;border-radius:20px;padding:26px 28px}
-#metodo .mdl h5{font:800 40px var(--display);color:#fff;margin:0 0 6px}
+#metodo .mdl h4{font:800 40px var(--display);color:#fff;margin:0 0 6px}
 #metodo .mdl small{font:500 20px var(--mono);color:var(--dim)}
 #metodo .mdl .acc{font:700 64px/1 var(--mono);color:#F2B84B;margin-top:18px}
 #metodo .mdl .bar{position:relative;height:16px;border-radius:8px;background:#14161A;margin-top:14px}

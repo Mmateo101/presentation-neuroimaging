@@ -145,7 +145,7 @@
     set('mtN', fmt(D.n_images || 86437));
     $('#mtModels').innerHTML = Object.keys(M).map(function (k) {
       var a = acc(M[k]), n = M[k].reduce(function (s, r) { return s + r[0] + r[1] + r[2]; }, 0);
-      return '<div class="mdl"><h5>' + k + '</h5><small>' + fmt(n) + ' imágenes de prueba</small><div class="acc">' + a.toFixed(2) + '</div><div class="bar" title="línea blanca = azar (0.33)"><i style="--a:' + a.toFixed(3) + '"></i><em></em></div></div>';
+      return '<div class="mdl"><h4>' + k + '</h4><small>' + fmt(n) + ' imágenes de prueba</small><div class="acc">' + a.toFixed(2) + '</div><div class="bar" title="línea blanca = azar (0.33)"><i style="--a:' + a.toFixed(3) + '"></i><em></em></div></div>';
     }).join('');
     var R = M.ResNet50, lab = ['CN', 'MCI', 'AD'], mx = 253, h = '<span></span><span class="ttl2">predicho →</span>';
     h = '<span></span>' + lab.map(function (l) { return '<span>' + l + '</span>'; }).join('');
