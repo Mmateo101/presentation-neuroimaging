@@ -345,7 +345,8 @@ savefig('07_labels')
 n_lab = df.groupby('subject').label.nunique()
 print(f'Subjects with more than one label: {(n_lab > 1).sum()} of {len(n_lab)}')
 print(f'Largest class has {lab.ratio_vs_largest.max():.0f}x more images than the smallest one.')
-STATS['classes'] = [{'label': c, 'key': CLASS_KEY.get(c, c), 'cdr': CDR.get(c), 'images': int(r.images),
+mb = df.groupby('label', observed=True).bytes.sum() / 1e6
+STATS['classes'] = [{'label': c, 'key': CLASS_KEY.get(c, c), 'cdr': CDR.get(c), 'images': int(r.images), 'mb': round(float(mb[c]), 1),
                      'subjects': int(r.subjects), 'scans': int(r.scans)} for c, r in lab.iterrows()]
 STATS['imbalance_ratio'] = float(lab.ratio_vs_largest.max())
 
@@ -416,6 +417,14 @@ STATS['clinical'] = [{'label': c, 'age_mean': float(r.age_mean), 'age_min': floa
                       'nwbv_mean': float(r.nwbv_mean), 'female_pct': float(r.female_pct),
                       'cdr_missing': int(r.cdr_missing)} for c, r in summ.iterrows()]
 STATS['nd_unrated'] = int(nd.CDR.isna().sum())
+STATS['nd_unrated_age'] = [int(nd[nd.CDR.isna()].Age.min()), int(nd[nd.CDR.isna()].Age.max())]
+# Whole OASIS-1 population (first visits), to compare with the subset that the Kaggle dataset kept
+cdr_all = clin1.CDR.map({0: 'nd', 0.5: 'vmd', 1: 'md', 2: 'mod'}).fillna('nd')
+STATS['oasis1'] = {'subjects': int(len(clin1)), 'sessions': int(len(clin)),
+                   'age': [int(clin1.Age.min()), int(clin1.Age.max())],
+                   'cdr_unrated': int(clin1.CDR.isna().sum()), 'demented': int((clin1.CDR > 0).sum()),
+                   'by_class': {k: int(v) for k, v in cdr_all.value_counts().items()}}
+print('OASIS-1 population by class (unrated counted as Non Demented):', STATS['oasis1']['by_class'])
 STATS['nd_total'] = int(len(nd))
 STATS['scatter'] = [[int(r.Age), round(float(r.nWBV), 3), CLASS_KEY.get(r.label, ''), int(pd.isna(r.CDR))]
                     for _, r in subj.dropna(subset=['Age', 'nWBV']).iterrows()]

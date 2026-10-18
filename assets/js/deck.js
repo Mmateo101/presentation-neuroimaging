@@ -47,37 +47,31 @@
   }
   $$('[data-sprite]').forEach(function (el) { initSprite(el, spriteMeta(el.dataset.sprite)); });
 
-  /* ---------------- 02 intro: 30 s timer ---------------- */
-  var T = { run: false, t0: 0, dur: 30 };
-  function timerDraw(left) {
-    set('tNum', Math.ceil(left));
-    $('#tRing').style.strokeDashoffset = (1 - left / T.dur).toFixed(4);
-  }
-  $('#tGo').addEventListener('click', function () { T.run = true; T.t0 = performance.now(); });
-  $('#tReset').addEventListener('click', function () { T.run = false; timerDraw(T.dur); });
-  TICK.intro = function () {
-    if (!T.run) return;
-    var left = Math.max(0, T.dur - (performance.now() - T.t0) / 1000);
-    timerDraw(left);
-    if (left === 0) T.run = false;
-  };
-
-  /* ---------------- 03 genobit: logo drawn in ---------------- */
+  /* ---------------- 03 genobit: the logo's DNA drawn in, then twisting ---------------- */
   (function () {
-    var g = $('#lgHelix'), A = '', B = '', x, t;
-    for (x = 70; x <= 630; x += 7) {
-      t = (x - 70) / 280 * 2 * Math.PI;
-      A += (x === 70 ? 'M' : 'L') + x + ' ' + (345 + 62 * Math.sin(t)).toFixed(1) + ' ';
-      B += (x === 70 ? 'M' : 'L') + x + ' ' + (345 - 62 * Math.sin(t)).toFixed(1) + ' ';
+    var g = $('#lgHelix'), rungs = [], x;
+    for (x = 84; x <= 616; x += 28) rungs.push(svg('line', { 'class': 'lg-r' }, g));
+    var B = svg('path', { 'class': 'lg-h', stroke: '#A9CDE5', pathLength: 1 }, g);
+    var A = svg('path', { 'class': 'lg-h', stroke: '#00706F', pathLength: 1 }, g);
+    function draw(ph) {
+      var a = '', b = '', t;
+      for (x = 70; x <= 630; x += 7) {
+        t = (x - 70) / 280 * 2 * Math.PI + ph;
+        a += (x === 70 ? 'M' : 'L') + x + ' ' + (345 + 62 * Math.sin(t)).toFixed(1) + ' ';
+        b += (x === 70 ? 'M' : 'L') + x + ' ' + (345 - 62 * Math.sin(t)).toFixed(1) + ' ';
+      }
+      A.setAttribute('d', a); B.setAttribute('d', b);
+      rungs.forEach(function (l, i) {
+        var xx = 84 + i * 28, sn = Math.sin((xx - 70) / 280 * 2 * Math.PI + ph);
+        l.setAttribute('x1', xx); l.setAttribute('x2', xx);
+        l.setAttribute('y1', (345 + 62 * sn * .82).toFixed(1)); l.setAttribute('y2', (345 - 62 * sn * .82).toFixed(1));
+        l.style.strokeOpacity = Math.max(0, (Math.abs(sn) - .3) / .7).toFixed(2);
+      });
     }
-    for (x = 84; x <= 616; x += 28) {
-      t = (x - 70) / 280 * 2 * Math.PI;
-      var sn = Math.sin(t);
-      if (Math.abs(sn) < .4) continue;
-      svg('line', { 'class': 'lg-r', x1: x, x2: x, y1: (345 + 62 * sn * .82).toFixed(1), y2: (345 - 62 * sn * .82).toFixed(1) }, g);
-    }
-    svg('path', { 'class': 'lg-h', d: B, stroke: '#A9CDE5', pathLength: 1 }, g);
-    svg('path', { 'class': 'lg-h', d: A, stroke: '#00706F', pathLength: 1 }, g);
+    draw(0);
+    var t0 = 0;
+    TICK.genobit = function (t) { if (!t0) t0 = t; draw(-(t - t0) * 1.1); };
+    SH.genobit = function () { t0 = 0; };
   })();
 
   /* ---------------- 04 proyectos: orbit + spinning helix ---------------- */
@@ -123,24 +117,25 @@
     $$('.sprite', sc).forEach(function (el, i) { if (el._m) setFrame(el, pingpong(t + i * 1.3, 11, el._m.frames)); });
   };
 
-  /* ---------------- 07 del 3D al JPG: scanner sweep over the raw head ---------------- */
+  /* ---------------- 07 así viene el dataset: folders + one scan playing with its file name ---------------- */
   (function () {
-    var rs = D.raw_sweep, rp = D.raw_perp;
-    if (!rs || !rp) return;
-    var lo = D.slice_min, hi = D.slice_max, n = rs.axis_len;
-    var band = $('#cBand');
-    band.style.top = (rp.band_rows[0] / rp.h * 100) + '%';
-    band.style.height = ((rp.band_rows[1] - rp.band_rows[0]) / rp.h * 100) + '%';
-    set('c61', D.slices_per_scan + ' de ' + n);
-    var jpg = $('#cJpg'), line = $('#cLine'), tag = $('#cTag');
+    var C = D.classes || [], tree = $('#dsTree'), m = D.scan_sprites && D.scan_sprites.nd;
+    var html = '<div class="root">Data/</div>';
+    C.forEach(function (c) {
+      html += '<div class="row"><i>└</i><b>' + c.label + '/</b><span>' + fmt(c.images) + ' JPG · ' + fmt(c.mb || 0) + ' MB</span></div>';
+    });
+    html += '<div class="tot">' + fmt(D.n_images || 0) + ' archivos · ' + (D.dataset_gb || 0) + ' GB · ' + fmt(D.n_subjects || 0) + ' personas · ' + fmt(D.n_scans || 0) + ' escaneos</div>';
+    tree.innerHTML = html;
+    set('dsN', D.slices_per_scan); set('dsRange', D.slice_min + '–' + D.slice_max);
+    if (!m) return;
+    var v = m.volume.match(/OAS1_(\d{4})_MR(\d)_mpr(\d)/), jpg = $('#cJpg'), name = $('#dsName');
+    set('dsSub', v[1]); set('dsSes', 'MR' + v[2]); set('dsScan', 'mpr-' + v[3]);
+    function seg(txt, col) { return '<span class="c" style="background:' + col + '">' + txt + '</span>'; }
     TICK.corte = function (t) {
-      var f = pingpong(t, 9, rs.frames), idx = rs.indices[f], kept = idx >= lo && idx <= hi;
+      var f = pingpong(t, 8, m.frames), sl = m.first_slice + f;
       setFrame(jpg, f);
-      line.style.top = ((n - 1 - idx) / n * 100) + '%';
-      set('cIdx', 'corte ' + idx + ' / ' + n);
-      tag.textContent = kept ? 'Kaggle lo conserva' : 'descartado';
-      tag.classList.toggle('kept', kept);
-      jpg.classList.toggle('kept', kept);
+      name.innerHTML = seg('OAS1', '#6B7280') + '_' + seg(v[1], '#00706F') + '_' + seg('MR' + v[2], '#3D358B') + '_' + seg('mpr-' + v[3], '#7D7ECA') + '_' + seg(sl, '#C99A2E') + '.jpg';
+      set('dsSl', sl);
     };
   })();
 
@@ -165,15 +160,22 @@
     });
     var mod = C.filter(function (c) { return c.key === 'mod'; })[0];
     if (mod) set('clTwo', mod.subjects);
+    var O = (D.oasis1 && D.oasis1.by_class) || {};
+    var modes = [
+      ['images', 'imágenes', 'Todas las imágenes del dataset (' + fmt(D.n_images || 0) + '), no una muestra.'],
+      ['subjects', 'personas en el dataset', 'Las ' + fmt(D.n_subjects || 0) + ' personas del dataset de Kaggle.'],
+      ['oasis', 'personas en OASIS-1', 'Las ' + fmt((D.oasis1 || {}).subjects || 0) + ' personas de OASIS-1 (tabla clínica oficial). Las ' + fmt((D.oasis1 || {}).cdr_unrated || 0) + ' sin CDR cuentan como Non Demented.']];
     SH.clases = function (sc, step) {
-      var key = step >= 2 ? 'subjects' : 'images';
-      var max = Math.max.apply(null, C.map(function (c) { return c[key]; }));
-      $('#clMode').innerHTML = 'contando <b>' + (key === 'images' ? 'imágenes' : 'personas') + '</b>';
+      var md = modes[Math.max(0, Math.min(step, 3) - 1)];
+      var val = function (c) { return md[0] === 'oasis' ? (O[c.key] || 0) : c[md[0]]; };
+      var max = Math.max.apply(null, C.map(val));
+      $('#clMode').innerHTML = 'contando <b>' + md[1] + '</b>';
+      $('#clNote').textContent = step >= 1 ? md[2] : '';
       rows.forEach(function (r) {
-        var w = step >= 1 ? r.c[key] / max * 82 : 0;
+        var w = step >= 1 ? val(r.c) / max * 82 : 0;
         r.fill.style.width = w + '%';
         r.val.style.left = w + '%';
-        r.val.textContent = step >= 1 ? fmt(r.c[key]) : '';
+        r.val.textContent = step >= 1 ? fmt(val(r.c)) : '';
       });
     };
   })();
@@ -371,7 +373,11 @@
     var mod = (D.classes || []).filter(function (c) { return c.key === 'mod'; })[0];
     if (mod) set('lmMod', mod.subjects);
     if (D.imbalance_ratio) set('lmRatio', fmt(D.imbalance_ratio, 0));
-    if (D.leak_random_split != null) set('lmLeak', fmt(D.leak_random_split * 100, 1) + '%');
+    if (D.leak_random_split != null) set('lmLeak', fmt(D.leak_random_split * 100, 0) + '%');
+    if (D.nd_unrated != null) set('lmUn', D.nd_unrated + ' de ' + D.nd_total);
+    if (D.nd_unrated_age) set('lmAge', D.nd_unrated_age[0] + '–' + D.nd_unrated_age[1]);
+    set('lmSl', D.slices_per_scan); set('lmRg', D.slice_min + '–' + D.slice_max);
+    if (D.images_per_subject_median) set('lmIpp', fmt(D.images_per_subject_median));
   })();
 
   /* ---------------- 21 fin: helix ---------------- */
@@ -384,6 +390,9 @@
     }
     $('#finA').setAttribute('d', A); $('#finB').setAttribute('d', B);
   };
+
+  /* cover: the helix strands are drawn in place instead of flying in */
+  setTimeout(function () { $$('#helix path').forEach(function (p) { p.setAttribute('pathLength', 1); }); }, 0);
 
   /* ================= engine ================= */
   var stage = $('#stage');
