@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GenoBit Neuroimaging</title>
+<meta name="description" content="Relanzamiento del proyecto Neuroimaging de GenoBit: base de datos OASIS, técnicas de limpieza, limitaciones y siguientes pasos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@500;700;800&family=Poppins:wght@400;500;600&family=JetBrains+Mono:wght@500;700&family=Montserrat:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/deck.css">
+<style>html,body{background:#0F1115}</style>
+</head>
+<body>
+<div id="stage" class="isdark" aria-live="polite">
+
+<!-- 01 PORTADA -->
+<section class="scene dark" id="cover"><i data-s="1" hidden></i>
+  <svg id="hero" viewBox="0 0 1920 1080" role="img" aria-label="Corte de un cerebro dibujado con líneas que se convierte en el logo de GenoBit">
+    <g id="brainG"></g>
+    <g id="logoG" transform="translate(960 440) scale(1.7) translate(-350 -225)">
+      <g class="lr-wrap" id="helix"></g>
+      <g class="pin lp" style="--fx:0px;--fy:-1500px;--l:.9s"><path d="M350 80 V250"/><circle cx="350" cy="60" r="20"/></g>
+      <g class="pin lp" style="--fx:-700px;--fy:-1300px;--l:1.05s"><path d="M255 130 V262"/><circle cx="255" cy="110" r="20"/></g>
+      <g class="pin lp" style="--fx:700px;--fy:-1300px;--l:1.05s"><path d="M445 130 V262"/><circle cx="445" cy="110" r="20"/></g>
+      <g class="pin lp" style="--fx:-1500px;--fy:-500px;--l:1.2s"><path d="M170 160 H190 Q204 160 204 176 V272"/><circle cx="150" cy="160" r="20"/></g>
+      <g class="pin lp" style="--fx:1500px;--fy:-500px;--l:1.2s"><path d="M530 160 H510 Q496 160 496 176 V272"/><circle cx="550" cy="160" r="20"/></g>
+    </g>
+  </svg>
+  <div class="center"><p class="k">GenoBit · Proyecto</p><h1>Neuroimaging</h1><p class="s">Relanzamiento · base de datos OASIS</p></div>
+  <div id="wordmark"><b>GenoBit</b><span>Genomics and Bioinformatics</span></div>
+</section>
+
+<!-- 02 PRESENTACIONES -->
+<section class="scene light" id="intro" data-tr="circle">
+  <div class="hd"><p class="eyebrow">Antes de empezar</p><h2 class="ttl">Ronda de <em>presentaciones</em></h2></div>
+  <div class="prompts">
+    <div class="pr" data-s="1"><b>01</b><span>Tu nombre</span><i>y cómo te gusta que te digan</i></div>
+    <div class="pr" data-s="2"><b>02</b><span>Carrera y semestre</span></div>
+    <div class="pr" data-s="3"><b>03</b><span>¿Por qué neuroimagen?</span><i>qué te llamó la atención del proyecto</i></div>
+    <div class="pr" data-s="4"><b>04</b><span>Qué quieres aprender</span><i>Python, deep learning, MRI, investigación…</i></div>
+  </div>
+  <div class="timer">
+    <svg viewBox="0 0 200 200"><circle class="tr-bg" cx="100" cy="100" r="86"/><circle class="tr-fg" id="tRing" cx="100" cy="100" r="86" pathLength="1"/></svg>
+    <div class="tnum"><b id="tNum">30</b><span>segundos por persona</span></div>
+  </div>
+  <i class="orb" style="background:var(--teal)"></i><i class="orb" style="background:var(--lav);animation-delay:-3.5s"></i><i class="orb" style="background:var(--indigo);animation-delay:-7s"></i><i class="orb" style="background:var(--sky);animation-delay:-10.5s"></i>
+  <div class="tbtns"><button class="btn" type="button" id="tGo">iniciar</button><button class="btn" type="button" id="tReset">reiniciar</button></div>
+</section>
+
+<!-- 03 GENOBIT -->
+<section class="scene light" id="genobit" data-tr="door">
+  <div class="gt">
+    <p class="eyebrow">El grupo</p>
+    <h2 class="ttl">¿Qué es GenoBit?</h2>
+    <p class="lead" data-s="1"><b style="color:var(--teal)">Geno</b> de genómica y <b style="color:var(--indigo)">Bit</b> de computación: el primer grupo estudiantil dedicado a bioinformática en el Tec.</p>
+  </div>
+  <svg class="logo" viewBox="0 0 700 580" aria-label="Logo de GenoBit: doble hélice con pines de circuito">
+    <g id="lgHelix"></g>
+    <g class="lg-p" style="transition-delay:.9s"><path d="M350 80 V250"/><circle cx="350" cy="60" r="20"/></g>
+    <g class="lg-p" style="transition-delay:1.05s"><path d="M255 130 V262"/><circle cx="255" cy="110" r="20"/></g>
+    <g class="lg-p" style="transition-delay:1.05s"><path d="M445 130 V262"/><circle cx="445" cy="110" r="20"/></g>
+    <g class="lg-p" style="transition-delay:1.2s"><path d="M170 160 H190 Q204 160 204 176 V272"/><circle cx="150" cy="160" r="20"/></g>
+    <g class="lg-p" style="transition-delay:1.2s"><path d="M530 160 H510 Q496 160 496 176 V272"/><circle cx="550" cy="160" r="20"/></g>
+    <text class="lg-word" x="350" y="560" text-anchor="middle">GenoBit</text>
+  </svg>
+  <div class="ach">
+    <div class="card" data-s="2"><b>01</b><h3>Identidad de marca</h3><p>Construida desde la bioinformática: la hélice con pines une biología molecular y computación.</p></div>
+    <div class="card" data-s="3"><b>02</b><h3>Comunidad fundada</h3><p>El primer grupo estudiantil de bioinformática del Tec.</p></div>
+    <div class="card" data-s="4"><b>03</b><h3>Plan de trabajo</h3><p>Talleres y proyectos con una ruta clara para los siguientes ciclos.</p></div>
+  </div>
+</section>
+
+<!-- 04 PROYECTOS -->
+<section class="scene light" id="proyectos" data-tr="diag">
+  <div class="gt">
+    <p class="eyebrow">Área de investigación</p>
+    <h2 class="ttl">Nuestros proyectos</h2>
+    <p class="lead" data-s="1">La rama donde cualquier miembro puede hacer investigación en bioinformática: proyectos liderados por estudiantes y acompañados por profesores.</p>
+  </div>
+  <div class="focus">
+    <div class="fx f2"><span class="k">Proyecto</span><h3 style="color:var(--teal)">Neuroimaging</h3><p>Limpiar y estandarizar resonancias de cerebro para detectar demencia.</p></div>
+    <div class="fx f3"><span class="k">Proyecto</span><h3>Biomarkers</h3><p>Señales de Alzheimer en sangre y líquido cefalorraquídeo (modelo A-T-N).</p></div>
+    <div class="fx f4"><span class="k">Proyecto</span><h3>AlphaBit</h3><p>App educativa que explica el plegamiento de proteínas con la API de AlphaFold2.</p></div>
+    <div class="fx f5"><span class="k">Proyecto</span><h3>miRNAseq pipeline</h3><p>De lecturas crudas de secuenciación al análisis de microRNAs.</p></div>
+    <div class="fx f6"><span class="k">Hoy</span><h3 style="color:var(--teal)">Neuroimaging</h3><p>Lo relanzamos este semestre, con ustedes.</p></div>
+  </div>
+  <div id="orbit">
+    <svg class="rg" viewBox="0 0 960 860"><ellipse class="ring" cx="480" cy="430" rx="400" ry="290"/></svg>
+    <div class="core"><svg viewBox="-105 -105 210 210"><g><path id="gbA" fill="none" stroke="#00706F" stroke-width="9" stroke-linecap="round"/><path id="gbB" fill="none" stroke="#A9CDE5" stroke-width="9" stroke-linecap="round"/><g id="gbR" stroke="#00706F" stroke-width="5" stroke-linecap="round"></g></g></svg><b>GenoBit</b></div>
+    <div class="planet bio" data-s="2"><div class="pin"><div class="pc"><svg viewBox="0 0 80 80" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"><ellipse cx="40" cy="40" rx="31" ry="25"/><path d="M40 15v50M20 33q7-7 14 0M20 47q7 7 14 0M46 33q7-7 14 0M46 47q7 7 14 0"/></svg></div><b>Neuroimaging</b></div></div>
+    <div class="planet" data-s="3"><div class="pin"><div class="pc"><svg viewBox="0 0 80 80"><path d="M28 12C20 28 12 38 12 50a16 16 0 0 0 32 0c0-12-8-22-16-38z" fill="#00706F"/><rect x="52" y="12" width="16" height="56" rx="8" fill="none" stroke="#3D358B" stroke-width="5"/><rect x="56" y="40" width="8" height="24" rx="4" fill="#A9CDE5"/></svg></div><b>Biomarkers</b></div></div>
+    <div class="planet" data-s="4"><div class="pin"><div class="pc"><svg viewBox="0 0 80 80"><text x="40" y="58" text-anchor="middle" font-size="62" font-weight="700" fill="#7D7ECA" style="font-family:var(--mono)">α</text></svg></div><b>AlphaBit</b></div></div>
+    <div class="planet" data-s="5"><div class="pin"><div class="pc"><svg viewBox="0 0 80 80" fill="none" stroke="#00706F" stroke-width="5" stroke-linecap="round"><path d="M6 40q8-18 17 0t17 0t17 0t17 0"/><path d="M14 31v-9M31 49v9M48 31v-9M65 49v9" stroke="#7D7ECA"/></svg></div><b>miRNAseq</b></div></div>
+  </div>
+  <i data-s="6" hidden></i>
+</section>
+
+<!-- 05 MOTIVACIÓN -->
+<section class="scene dark" id="motiv" data-tr="zoom">
+  <div class="hd"><p class="eyebrow">Neuroimaging · motivación</p><h2 class="ttl">¿Por qué <em>imágenes de cerebro</em>?</h2></div>
+  <div class="cols">
+    <div class="mc" data-s="1"><h3>El problema</h3><p>El deterioro cognitivo afecta memoria, atención, lenguaje y motricidad. Está ligado al Alzheimer, al Parkinson y a otras demencias.</p></div>
+    <div class="mc" data-s="2"><h3>El reto</h3><p>Leer una resonancia (MRI) es tardado, subjetivo y depende de la experiencia del especialista, sobre todo cuando los cambios son sutiles.</p></div>
+  </div>
+  <div class="coinw" data-s="3">
+    <div class="coin"><div class="face">50%</div><div class="face b">?</div></div>
+    <div class="acc">accuracy &lt; 0.5<small>El modelo del semestre pasado: peor que lanzar una moneda.</small></div>
+  </div>
+  <div class="banner" data-s="4">Antes de clasificar, hay que asegurar la calidad de las imágenes.</div>
+</section>
+
+<!-- 06 OASIS -->
+<section class="scene dark" id="oasis" data-tr="circle">
+  <div class="t"><p class="eyebrow">La base de datos</p><h2 class="ttl">OASIS-1</h2><p class="lead" style="font-size:30px">Open Access Series of Imaging Studies · Washington University in St. Louis. Resonancias T1 de acceso abierto.</p></div>
+  <p class="gl o" data-s="1">Release original (3D)</p><p class="gl k">Versión de Kaggle (2D, la que usamos)</p>
+  <div class="grid g1" data-s="1">
+    <div><b data-count="416">0</b><span>personas</span></div>
+    <div><b>18–96</b><span>años de edad</span></div>
+    <div><b data-count="436">0</b><span>sesiones de escaneo</span></div>
+    <div><b>3–4</b><span>escaneos T1 por sesión</span></div>
+  </div>
+  <div class="grid g2">
+    <div><b id="oaImg">86,437</b><span>imágenes JPG</span></div>
+    <div><b id="oaSub">347</b><span>personas</span></div>
+    <div><b id="oaScan">1,417</b><span>escaneos 3D</span></div>
+    <div><b id="oaGb">1.36 GB</b><span>en 4 carpetas (una por clase)</span></div>
+  </div>
+  <i data-s="2" hidden></i>
+  <div class="view v-ax sprite" data-sprite="plane.axial"></div>
+  <div class="view v-co sprite" data-sprite="plane.coronal"></div>
+  <div class="view v-sa sprite" data-sprite="plane.sagittal"></div>
+  <span class="vl" style="left:976px;top:160px">axial</span><span class="vl" style="left:1506px;top:160px">coronal</span><span class="vl" style="left:1506px;top:500px">sagital</span>
+  <p class="src">Cada escaneo es un volumen 3D de 256 × 256 × 128 vóxeles. Estas animaciones recorren un cerebro real de OASIS (OAS1_0001) en los tres planos.</p>
+</section>
+
+<!-- 07 DEL 3D AL JPG -->
+<section class="scene light" id="corte" data-tr="door">
+  <div class="hd"><p class="eyebrow">¿De dónde salen los JPG?</p><h2 class="ttl">Del volumen 3D <em>al JPG</em></h2></div>
+  <div class="head3"><img src="assets/generated/raw_perp.jpg" alt="Corte sagital del escaneo crudo con la banda de cortes que conserva Kaggle"><div class="band" id="cBand"></div><div class="scanline" id="cLine"></div></div>
+  <div class="jpg sprite" id="cJpg" data-sprite="raw"></div>
+  <div class="meta3"><span id="cIdx">corte 0 / 256</span><span class="tagk" id="cTag">descartado</span></div>
+  <div class="fname">
+    <div class="fn"><span style="background:#3A3F47">OAS1</span><span>_</span><span style="background:var(--teal)">0028</span><span>_</span><span style="background:var(--indigo)">MR1</span><span>_</span><span style="background:var(--lav)">mpr-1</span><span>_</span><span style="background:#C99A2E">100</span><span>.jpg</span></div>
+    <div class="fdesc">
+      <div style="border-color:#6B7280;transition-delay:.1s"><b>OAS1</b>proyecto OASIS-1</div>
+      <div style="border-color:var(--teal);transition-delay:.3s"><b>0028</b>ID de la persona</div>
+      <div style="border-color:var(--indigo);transition-delay:.5s"><b>MR1</b>sesión (MR2 = re-escaneo)</div>
+      <div style="border-color:var(--lav);transition-delay:.7s"><b>mpr-1</b>escaneo repetido dentro de la sesión</div>
+      <div style="border-color:#C99A2E;transition-delay:.9s"><b>100</b>número de corte dentro del volumen</div>
+    </div>
+  </div>
+  <p class="stat61" data-s="2"><b id="c61">61 de 256</b><br>cortes por escaneo (100–160). Falta el resto de la cabeza.</p>
+  <p class="warn">Los JPG salen del escaneo <b>crudo</b>: con cráneo, sin corregir brillo y estirados 2:1. La etiqueta solo vive en el nombre de la carpeta.</p>
+  <i data-s="1" hidden></i><i data-s="3" hidden></i><i data-s="4" hidden></i>
+</section>
+
+<!-- 08 CLASES -->
+<section class="scene light" id="clases" data-tr="rise">
+  <div class="hd"><p class="eyebrow">Etiquetas</p><h2 class="ttl">Imágenes <em>vs.</em> personas</h2></div>
+  <p class="mode" id="clMode">contando <b>imágenes</b></p>
+  <div class="bars" id="clBars"></div>
+  <div class="side">
+    <p class="cap" style="margin:0 0 16px">cada punto = 1 persona · grandes: demencia moderada</p>
+    <div class="people" id="clPeople"></div>
+    <div class="two"><b id="clTwo">2</b>personas en <i style="font-style:normal;color:var(--teal)">Moderate Dementia</i>. Si separamos por persona, el modelo entrena con una sola.</div>
+  </div>
+  <i data-s="1" hidden></i><i data-s="2" hidden></i><i data-s="3" hidden></i>
+</section>
+
+<!-- 09 UN ESCANEO POR CLASE -->
+<section class="scene dark" id="escaneos" data-tr="flip">
+  <div class="hd"><p class="eyebrow">Lo que ve la red</p><h2 class="ttl">Un escaneo <em>por clase</em></h2></div>
+  <div class="ctr"><b id="escN">100</b><span>número de corte</span></div>
+  <div class="quad" id="escQuad"></div>
+</section>
+
+<!-- 10 PERSONAS -->
+<section class="scene light" id="personas" data-tr="corner">
+  <div class="hd"><p class="eyebrow">Tabla clínica de OASIS</p><h2 class="ttl">¿Quiénes son <em>estas personas</em>?</h2></div>
+  <svg class="plot" id="psPlot" viewBox="0 0 1150 690"></svg>
+  <div class="side">
+    <div class="leg" id="psLeg"></div>
+    <p class="note n1"><b id="psUn">131 de 266</b> personas “Non Demented” nunca fueron evaluadas clínicamente: son adultos jóvenes (sin CDR).</p>
+    <p class="note n2">La <b>edad</b> casi separa las clases por sí sola. Una red puede aprender “joven vs. mayor” en lugar de “sano vs. demencia”.</p>
+  </div>
+  <i data-s="1" hidden></i><i data-s="2" hidden></i><i data-s="3" hidden></i>
+</section>
+
+<!-- 11 FUGA -->
+<section class="scene tint" id="fuga" data-tr="doorv">
+  <div class="hd"><p class="eyebrow">Redundancia</p><h2 class="ttl">Cortes casi idénticos y <em>fuga de datos</em></h2></div>
+  <div class="corr">
+    <div data-s="1"><b id="fgAdj" style="color:var(--teal)">0.97</b><span>correlación entre cortes vecinos del mismo escaneo</span><div class="pairs"><div class="sprite" id="fgA"></div><div class="sprite" id="fgB"></div></div></div>
+    <div data-s="1"><b id="fgRand" style="color:var(--lav)">0.6</b><span>entre dos imágenes al azar</span></div>
+  </div>
+  <div class="split" id="fgSplit" data-s="2">
+    <div class="side2 tr"><h4>entrenamiento</h4></div><div class="side2 te"><h4>prueba</h4></div>
+    <p class="verdict" id="fgVerdict"></p>
+  </div>
+  <i data-s="3" hidden></i>
+</section>
+
+<!-- 12 TÉCNICAS -->
+<section class="scene light" id="tecnicas" data-tr="zoom">
+  <div class="hd"><p class="eyebrow">Lo que se propuso el semestre pasado</p><h2 class="ttl">Técnicas de <em>preprocesamiento</em></h2></div>
+  <div class="groups">
+    <div class="grp" data-s="1"><h4>Limpieza y estandarización</h4><div class="tl">
+      <div class="tc"><svg viewBox="0 0 96 96" fill="none" stroke-width="6" stroke-linecap="round"><circle cx="48" cy="48" r="40" stroke="#A9CDE5"/><circle cx="48" cy="50" r="28" stroke="#00706F" stroke-dasharray="8 8"/></svg><h3>Skull stripping</h3><p>Quita cráneo, piel y ojos: solo queda el cerebro.</p></div>
+      <div class="tc"><svg viewBox="0 0 96 96"><defs><linearGradient id="gbf" x1="0" x2="1"><stop offset="0" stop-color="#3D358B"/><stop offset="1" stop-color="#A9CDE5"/></linearGradient></defs><rect x="8" y="16" width="80" height="64" rx="12" fill="url(#gbf)"/><path d="M20 60q14-30 28 0t28 0" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/></svg><h3>Bias field correction</h3><p>Corrige brillos artificiales del escáner.</p></div>
+      <div class="tc"><svg viewBox="0 0 96 96" fill="none" stroke-width="6"><circle cx="48" cy="48" r="38" stroke="#A9CDE5"/><path d="M48 10v76M10 48h76" stroke="#7D7ECA"/><circle cx="48" cy="48" r="18" fill="#00706F" stroke="none"/></svg><h3>FreeSurfer</h3><p>Segmenta y parcela el cerebro en regiones.</p></div>
+    </div></div>
+    <div class="grp" data-s="2"><h4>Selección de cortes</h4><div class="tl">
+      <div class="tc"><svg viewBox="0 0 96 96"><g fill="#00706F"><rect x="10" y="60" width="10" height="26" rx="3"/><rect x="26" y="40" width="10" height="46" rx="3"/><rect x="42" y="18" width="10" height="68" rx="3"/><rect x="58" y="34" width="10" height="52" rx="3"/><rect x="74" y="56" width="10" height="30" rx="3"/></g></svg><h3>Entropía de Shannon</h3><p>Cuánta información trae cada corte.</p></div>
+      <div class="tc"><svg viewBox="0 0 96 96" fill="none" stroke-linecap="round" stroke-width="8"><path d="M14 22h68" stroke="#00706F"/><path d="M14 48h48" stroke="#7D7ECA"/><path d="M14 74h26" stroke="#A9CDE5"/></svg><h3>Slice ranking</h3><p>Ordena los cortes por utilidad y se queda con los mejores.</p></div>
+    </div></div>
+  </div>
+  <p class="tnote" data-s="3">Se listaron, pero no se implementaron ni se midió su efecto. A continuación: cómo funciona cada una, con datos reales de OASIS.</p>
+</section>
+
+<!-- 13 BIAS FIELD -->
+<section class="scene dark" id="bias" data-tr="diag">
+  <div class="t">
+    <p class="eyebrow">Técnica 1 · limpieza</p><h2 class="ttl" style="font-size:80px">Bias field correction</h2>
+    <p class="eq">observada = real <em>× campo</em> + ruido</p>
+    <p class="desc">El escáner agrega un “campo” suave de brillo: el mismo tejido se ve más claro de un lado. <b style="color:#fff">N4</b> estima ese campo con curvas suaves (B-splines), afinando el histograma en cada iteración, y luego lo divide.</p>
+  </div>
+  <div class="stage4">
+    <img id="bsClean" src="assets/generated/bias_clean.png" alt="Corte limpio">
+    <img id="bsCorrupt" src="assets/generated/bias_corrupt.png" alt="Corte con campo de brillo" style="opacity:0">
+    <img id="bsFixed" src="assets/generated/bias_corrected.png" alt="Corte corregido con N4" style="opacity:0">
+    <div class="rowline" id="bsRow"></div>
+    <span class="lbl" id="bsLbl">imagen limpia</span>
+  </div>
+  <div class="fieldw"><img src="assets/generated/bias_field.png" alt="Campo de brillo estimado por N4"><span class="lbl">campo estimado por N4</span></div>
+  <div class="cvs"><div><b id="cvC">—</b><span>variación en materia blanca, con campo</span></div><div><b id="cvF" style="color:var(--sky)">—</b><span>después de N4</span></div></div>
+  <svg class="prof" id="bsProf" viewBox="0 0 900 250"></svg>
+  <i data-s="1" hidden></i><i data-s="2" hidden></i><i data-s="3" hidden></i><i data-s="4" hidden></i>
+</section>
+
+<!-- 14 SKULL STRIPPING -->
+<section class="scene light" id="skull" data-tr="rise">
+  <div class="t"><p class="eyebrow">Técnica 2 · limpieza</p><h2 class="ttl" style="font-size:84px">Skull stripping</h2><p class="lead" style="font-size:28px">Cinco pasos clásicos para quedarnos solo con el cerebro.</p></div>
+  <div class="steps" id="skSteps">
+    <div class="stp"><b>0</b><span>Imagen de entrada</span><small>T1 con cráneo, piel y cuello.</small></div>
+    <div class="stp"><b>1</b><span>Umbral de Otsu</span><small>Separa tejido del fondo eligiendo el umbral que mejor divide el histograma.</small></div>
+    <div class="stp"><b>2</b><span>Erosión</span><small>Adelgaza la máscara y corta los puentes entre cerebro y cráneo.</small></div>
+    <div class="stp"><b>3</b><span>Componente más grande</span><small>El cerebro es la pieza conectada más grande: el resto se descarta.</small></div>
+    <div class="stp"><b>4</b><span>Dilatar y rellenar</span><small>Recupera el borde perdido y rellena los ventrículos.</small></div>
+    <div class="stp"><b>5</b><span>Aplicar la máscara</span><small>Comparamos contra la máscara oficial de OASIS.</small></div>
+  </div>
+  <div class="viewer" id="skView">
+    <img src="assets/generated/skull_0.png" alt="Entrada"><img src="assets/generated/skull_1.png" alt="Umbral"><img src="assets/generated/skull_2.png" alt="Erosión">
+    <img src="assets/generated/skull_3.png" alt="Componente más grande"><img src="assets/generated/skull_4.png" alt="Máscara final"><img src="assets/generated/skull_5.png" alt="Cerebro sin cráneo">
+    <img class="truth" src="assets/generated/skull_truth.png" alt="Máscara oficial de OASIS" style="opacity:0">
+  </div>
+  <div class="dice"><b id="skDice">0.00</b><span>Dice contra la máscara oficial (1 = idéntica)</span><b id="skDice3" style="font-size:44px;margin-top:22px;color:var(--indigo)">0.00</b><span>en toda la cabeza, corte por corte: falla cerca de ojos y cuello</span></div>
+  <i data-s="1" hidden></i><i data-s="2" hidden></i><i data-s="3" hidden></i><i data-s="4" hidden></i><i data-s="5" hidden></i><i data-s="6" hidden></i>
+</section>
+
+<!-- 15 FREESURFER -->
+<section class="scene dark" id="freesurfer" data-tr="door">
+  <div class="t"><p class="eyebrow">Técnica 3 · limpieza</p><h2 class="ttl" style="font-size:84px">FreeSurfer: <em>todo el pipeline</em></h2></div>
+  <div class="pipe" data-s="1">
+    <div class="belt"><i></i></div>
+    <div class="stn" style="left:6%;--d:.1s"><div class="bx"><svg viewBox="0 0 70 70" fill="none" stroke="#fff" stroke-width="5"><rect x="10" y="10" width="50" height="50" rx="8"/><path d="M10 35h50"/></svg></div><span>Corrección de movimiento</span></div>
+    <div class="stn" style="left:28%;--d:.8s"><div class="bx"><svg viewBox="0 0 70 70" fill="none" stroke="#fff" stroke-width="5"><circle cx="35" cy="35" r="24" stroke-dasharray="6 6"/><circle cx="35" cy="36" r="14"/></svg></div><span>Skull stripping</span></div>
+    <div class="stn" style="left:50%;--d:1.5s"><div class="bx"><svg viewBox="0 0 70 70" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"><path d="M10 50q12-30 25 0t25 0"/></svg></div><span>Corrección de bias</span></div>
+    <div class="stn" style="left:72%;--d:2.2s"><div class="bx"><svg viewBox="0 0 70 70" fill="none" stroke="#fff" stroke-width="5"><rect x="12" y="12" width="46" height="46" rx="6"/><path d="M12 35h46M35 12v46"/></svg></div><span>Registro a un atlas</span></div>
+    <div class="stn" style="left:94%;--d:2.9s"><div class="bx"><svg viewBox="0 0 70 70"><circle cx="35" cy="35" r="26" fill="#A9CDE5"/><circle cx="35" cy="35" r="17" fill="#7D7ECA"/><circle cx="35" cy="35" r="8" fill="#00706F"/></svg></div><span>Segmentación y parcelación</span></div>
+  </div>
+  <div class="facts" data-s="2">
+    <div><b>6–10 h</b><span>por escaneo, por persona</span></div>
+    <div><b>~100</b><span>regiones etiquetadas (corteza, hipocampo, ventrículos…)</span></div>
+    <div><b>⚠</b><span>Sensible al contraste; puede fallar sin avisar. Requiere licencia (gratuita) y Linux/Mac.</span></div>
+  </div>
+  <div class="segw" data-s="3"><img src="assets/generated/seg_brain.png" alt="Cerebro sin cráneo"><img class="lab" src="assets/generated/seg_labels.png" alt="Segmentación de tejidos"></div>
+  <div class="vols" data-s="3" id="fsVols"></div>
+</section>
+
+<!-- 16 ENTROPÍA -->
+<section class="scene light" id="entropia" data-tr="circle">
+  <div class="t"><p class="eyebrow">Técnica 4 · selección de cortes</p><h2 class="ttl" style="font-size:80px">Entropía de Shannon</h2></div>
+  <div class="formula">H = −Σ p(i) · log₂ p(i)<small>p(i) es la fracción de píxeles con brillo i. Un corte con pura textura y estructura tiene H alta; uno casi vacío o uniforme, H baja.</small></div>
+  <div class="sw sprite" data-sprite="entropy"></div>
+  <div class="hnum"><b id="enH">0.00</b><span>bits en este corte</span><b id="enZ" style="font-size:40px;margin-top:20px;color:var(--lav)">z 0</b><span>posición en la cabeza</span></div>
+  <svg class="curve" id="enCurve" viewBox="0 0 1664 220"></svg>
+  <div class="hists" id="enHists"></div>
+  <i data-s="1" hidden></i><i data-s="2" hidden></i>
+</section>
+
+<!-- 17 SLICE RANKING -->
+<section class="scene tint" id="ranking" data-tr="flip">
+  <div class="t"><p class="eyebrow">Técnica 5 · selección de cortes</p><h2 class="ttl" style="font-size:80px">Slice ranking</h2></div>
+  <div class="crit"><span class="chip">entropía</span><span class="chip">área de tejido</span><span class="chip">nitidez (Laplaciano)</span><span class="chip" style="background:var(--teal);color:#fff">= score</span></div>
+  <div class="board" id="rkBoard"></div>
+  <p class="rk-note" id="rkNote">Los 61 cortes de un escaneo real de Kaggle, en orden anatómico.</p>
+  <i data-s="1" hidden></i><i data-s="2" hidden></i><i data-s="3" hidden></i>
+</section>
+
+<!-- 18 ¿Y EL PROFESOR? -->
+<section class="scene dark" id="profe" data-tr="zoom">
+  <div class="t"><p class="eyebrow">Una pregunta incómoda</p><h2 class="ttl">¿Y el <em>profesor</em>?</h2></div>
+  <div class="why" data-s="2">
+    <div>El semestre pasado el proyecto avanzó <b>sin asesor</b>.</div>
+    <div>Sin profesor no hay <b>acceso a bases restringidas</b> como ADNI, ni <b>revisión metodológica</b>, ni ruta a <b>publicar</b>.</div>
+    <div>Meta de este ciclo: <b>sumar a un(a) profesor(a)</b> de imagen médica o deep learning.</div>
+  </div>
+  <div class="stagep">
+    <div class="spot"></div>
+    <svg class="chair" viewBox="0 0 360 400" fill="none" stroke="#7D7ECA" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"><path d="M90 30h180v170H90z" fill="#2A2D33"/><path d="M70 200h220v40H70z" fill="#2A2D33"/><path d="M90 240v140M270 240v140M110 300h140"/></svg>
+    <div class="poster" data-s="1"><h3>SE BUSCA</h3><p class="who">Profesor(a) asesor(a)</p>
+      <ul><li>Imagen médica, visión o deep learning</li><li>Acompañar un semestre de experimentos</li><li>Ayudar con el acceso a ADNI</li></ul>
+      <p class="rew">Recompensa: un equipo con ganas</p></div>
+  </div>
+</section>
+
+<!-- 19 LIMITACIONES -->
+<section class="scene light" id="limites" data-tr="doorv">
+  <div class="hd"><p class="eyebrow">Siendo honestos</p><h2 class="ttl">Limitaciones</h2></div>
+  <div class="cols">
+    <div><h4>Del trabajo anterior</h4>
+      <div class="li" data-s="1"><i>1</i><div><b>Sin notebooks ni código</b><span>Nada se puede reproducir ni revisar.</span></div></div>
+      <div class="li" data-s="1"><i>2</i><div><b>Técnicas listadas, no probadas</b><span>No sabemos qué efecto tuvo cada una.</span></div></div>
+      <div class="li" data-s="1"><i>3</i><div><b>Accuracy &lt; 0.5 sin diagnóstico</b><span>Sin métricas por clase ni explicación del fallo.</span></div></div>
+      <div class="li" data-s="1"><i>4</i><div><b>ADNI quedó en pausa</b><span>Acceso restringido y sin asesor que lo respalde.</span></div></div>
+    </div>
+    <div><h4>De los datos (OASIS en Kaggle)</h4>
+      <div class="li" data-s="2"><i>1</i><div><b>Moderate Dementia = <span id="lmMod">2</span> personas</b><span>Desbalance de <span id="lmRatio">138</span>× en imágenes.</span></div></div>
+      <div class="li" data-s="2"><i>2</i><div><b>“Non Demented” mezcla jóvenes sin evaluar</b><span>Riesgo de aprender edad en vez de demencia.</span></div></div>
+      <div class="li" data-s="2"><i>3</i><div><b>Solo 61 de 256 cortes, JPG de 8 bits</b><span>3D parcial, compresión con pérdida y estirado 2:1.</span></div></div>
+      <div class="li" data-s="2"><i>4</i><div><b>Cortes casi duplicados</b><span>Un split al azar filtra a la misma persona en train y test: <span id="lmLeak">100%</span>.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 20 SIGUIENTES PASOS -->
+<section class="scene light" id="pasos" data-tr="zoom">
+  <div class="pt"><p class="eyebrow">Hacia dónde vamos</p><h2 class="ttl" style="font-size:84px">Siguientes pasos</h2></div>
+  <svg class="road" viewBox="0 0 1920 1080"><path class="rd-bg" d="M120 565H1800"/><path class="rd" pathLength="1" d="M120 565H1800"/></svg>
+  <div class="nd2 n1" style="left:300px"><svg viewBox="0 0 60 60" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 14l-10 16 10 16M42 14l10 16-10 16"/></svg></div>
+  <div class="nd2 n2" style="left:630px"><svg viewBox="0 0 60 60" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M30 8l20 8v14c0 14-9 20-20 24C19 50 10 44 10 30V16z"/><path d="M21 31l7 7 12-13"/></svg></div>
+  <div class="nd2 n3" style="left:960px"><svg viewBox="0 0 60 60" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"><circle cx="30" cy="30" r="20" stroke-dasharray="6 5"/><circle cx="30" cy="31" r="10"/></svg></div>
+  <div class="nd2 n4" style="left:1290px"><svg viewBox="0 0 60 60" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 50V30M24 50V14M36 50V24M48 50V36"/><path d="M8 52h44"/></svg></div>
+  <div class="nd2 n5" style="left:1620px"><svg viewBox="0 0 60 60" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="30" cy="20" r="9"/><path d="M12 52q18-26 36 0"/></svg></div>
+  <div class="cd2 up c1" style="left:300px"><span class="no">01</span><h3>Todo reproducible</h3><p>Este repo y el notebook de OASIS como punto de partida común.</p></div>
+  <div class="cd2 dn c2" style="left:630px"><span class="no">02</span><h3>Línea base honesta</h3><p>CNN con split por persona y métricas balanceadas (F1 macro, AUC).</p></div>
+  <div class="cd2 up c3" style="left:960px"><span class="no">03</span><h3>Pipeline 3D</h3><p>N4, skull stripping y registro sobre los volúmenes originales de OASIS.</p></div>
+  <div class="cd2 dn c4" style="left:1290px"><span class="no">04</span><h3>Una técnica a la vez</h3><p>Ablación: medir cuánto mueve cada técnica cada métrica.</p></div>
+  <div class="cd2 up c5" style="left:1620px"><span class="no">05</span><h3>Asesor y reporte</h3><p>Sumar profesor(a), escribir resultados y valorar ADNI.</p></div>
+  <p class="meta" data-s="6">Meta del semestre: saber <b>qué técnica mejora qué métrica</b>, con evidencia.</p>
+  <i data-s="1" hidden></i><i data-s="2" hidden></i><i data-s="3" hidden></i><i data-s="4" hidden></i><i data-s="5" hidden></i>
+</section>
+
+<!-- 21 FIN -->
+<section class="scene dark" id="fin" data-tr="circle">
+  <div class="bye"><h2>¿Preguntas?</h2><p>Notebook, datos y esta presentación:</p><p class="mono">github.com/Mmateo101/presentation-neuroimaging</p></div>
+  <svg class="hx2" viewBox="0 0 1200 200"><path id="finA" fill="none" stroke="#00706F" stroke-width="10" stroke-linecap="round"/><path id="finB" fill="none" stroke="#A9CDE5" stroke-width="10" stroke-linecap="round"/></svg>
+</section>
+
+<button id="fs" type="button" aria-label="Pantalla completa">pantalla completa</button>
+<div id="hint">clic o → para avanzar</div>
+<div id="foot"><span>GenoBit · Neuroimaging</span><span id="pg" class="mono"></span></div>
+<div id="prog"></div>
+</div>
+
+<script src="assets/generated/stats.js"></script>
+<script src="assets/js/cover-brain.js"></script>
+<script src="assets/js/deck.js"></script>
+</body>
+</html>

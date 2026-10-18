@@ -1,0 +1,8 @@
+# downloads, caches and notebook outputs (all reproducible with OASIS_EDA.ipynb)
+.work/
+outputs/
+__pycache__/
+.ipynb_checkpoints/
+
+# source material from the GRES event (26 MB, contains other projects' slides and photos)
+Presentación GRES.pdf
