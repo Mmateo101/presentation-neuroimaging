@@ -1,0 +1,26 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "bounce-easing",
+        "value": "cubic-bezier(.3, 1.6, .5, 1)",
+        "createdAt": "2026-10-18T21:23:18.906Z",
+        "reason": "Claude: the user asked to draw on their GenoBit Biomarkers deck, whose motion vocabulary uses this overshoot easing (copied into base.css)"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "cubic-bezier(.3, 1.5, .5, 1)",
+        "createdAt": "2026-10-18T21:23:19.629Z",
+        "reason": "Claude: the user asked to draw on their GenoBit Biomarkers deck, whose motion vocabulary uses this overshoot easing (copied into base.css)"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "cubic-bezier(.3, 1.4, .5, 1)",
+        "createdAt": "2026-10-18T21:23:20.326Z",
+        "reason": "Claude: the user asked to draw on their GenoBit Biomarkers deck, whose motion vocabulary uses this overshoot easing (copied into base.css)"
+      }
+    ]
+  }
+}

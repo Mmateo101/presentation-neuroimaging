@@ -65,8 +65,8 @@
 
 /* ---------- motivación ---------- */
 #motiv .cols{position:absolute;left:128px;top:300px;width:900px;display:flex;flex-direction:column;gap:30px}
-#motiv .mc{border-left:8px solid var(--lav);padding:8px 0 8px 30px}
-#motiv .mc h3{font:700 44px var(--display);margin:0 0 8px;color:#fff}
+#motiv .mc{padding:4px 0}
+#motiv .mc h3{font:700 44px var(--display);margin:0 0 8px;color:var(--lav)}
 #motiv .mc p{font-size:28px;line-height:1.45;color:var(--dim);margin:0}
 #motiv .coinw{position:absolute;left:1120px;top:300px;width:680px;text-align:center;perspective:1200px}
 #motiv .coin{width:240px;height:240px;margin:0 auto;position:relative;transform-style:preserve-3d}
@@ -310,7 +310,7 @@
 #profe .poster ul{margin:0;padding-left:26px;font-size:23px;line-height:1.4}
 #profe .poster .rew{margin-top:16px;border-top:3px dashed #3B2F1E;padding-top:12px;font:700 24px var(--mono);text-align:center}
 #profe .why{position:absolute;left:128px;top:470px;width:820px;display:flex;flex-direction:column;gap:22px}
-#profe .why div{font-size:30px;line-height:1.35;color:var(--dim);padding-left:26px;border-left:6px solid var(--lav)}
+#profe .why div{font-size:30px;line-height:1.35;color:var(--dim)}
 #profe .why b{color:#fff}
 
 /* ---------- limitaciones ---------- */
