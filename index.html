@@ -146,6 +146,7 @@
 </section>
 
 
+<!-- 08 CLASES -->
 <section class="scene light" id="clases" data-tr="rise">
   <div class="hd"><p class="eyebrow">Etiquetas</p><h2 class="ttl">Imágenes <em>vs.</em> personas</h2></div>
   <p class="mode" id="clMode">contando <b>imágenes</b></p>
@@ -192,104 +193,86 @@
   <i data-s="3" hidden></i>
 </section>
 
-<!-- 12 TÉCNICAS -->
-<section class="scene light" id="tecnicas" data-tr="zoom">
-  <div class="hd"><p class="eyebrow">Lo que se propuso el semestre pasado</p><h2 class="ttl">Técnicas de <em>preprocesamiento</em></h2></div>
-  <div class="groups">
-    <div class="grp" data-s="1"><h4>Limpieza y estandarización</h4><div class="tl">
-      <div class="tc"><svg viewBox="0 0 96 96" fill="none" stroke-width="6" stroke-linecap="round"><circle cx="48" cy="48" r="40" stroke="#A9CDE5"/><circle cx="48" cy="50" r="28" stroke="#00706F" stroke-dasharray="8 8"/></svg><h3>Skull stripping</h3><p>Quita cráneo, piel y ojos: solo queda el cerebro.</p></div>
-      <div class="tc"><svg viewBox="0 0 96 96"><defs><linearGradient id="gbf" x1="0" x2="1"><stop offset="0" stop-color="#3D358B"/><stop offset="1" stop-color="#A9CDE5"/></linearGradient></defs><rect x="8" y="16" width="80" height="64" rx="12" fill="url(#gbf)"/><path d="M20 60q14-30 28 0t28 0" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/></svg><h3>Bias field correction</h3><p>Corrige brillos artificiales del escáner.</p></div>
-      <div class="tc"><svg viewBox="0 0 96 96" fill="none" stroke-width="6"><circle cx="48" cy="48" r="38" stroke="#A9CDE5"/><path d="M48 10v76M10 48h76" stroke="#7D7ECA"/><circle cx="48" cy="48" r="18" fill="#00706F" stroke="none"/></svg><h3>FreeSurfer</h3><p>Segmenta y parcela el cerebro en regiones.</p></div>
-    </div></div>
-    <div class="grp" data-s="2"><h4>Selección de cortes</h4><div class="tl">
-      <div class="tc"><svg viewBox="0 0 96 96"><g fill="#00706F"><rect x="10" y="60" width="10" height="26" rx="3"/><rect x="26" y="40" width="10" height="46" rx="3"/><rect x="42" y="18" width="10" height="68" rx="3"/><rect x="58" y="34" width="10" height="52" rx="3"/><rect x="74" y="56" width="10" height="30" rx="3"/></g></svg><h3>Entropía de Shannon</h3><p>Cuánta información trae cada corte.</p></div>
-      <div class="tc"><svg viewBox="0 0 96 96" fill="none" stroke-linecap="round" stroke-width="8"><path d="M14 22h68" stroke="#00706F"/><path d="M14 48h48" stroke="#7D7ECA"/><path d="M14 74h26" stroke="#A9CDE5"/></svg><h3>Slice ranking</h3><p>Ordena los cortes por utilidad y se queda con los mejores.</p></div>
-    </div></div>
+<!-- 12 CUÁNTOS DATOS SIRVEN -->
+<section class="scene light" id="cuantos" data-tr="zoom">
+  <div class="hd"><p class="eyebrow">El problema real del dataset</p><h2 class="ttl">¿Cuántos datos <em>sirven de verdad</em>?</h2></div>
+  <div class="cnt">
+    <b id="cqNum">86,437</b><span id="cqUnit">imágenes</span>
+    <p id="cqTxt">Parece muchísimo…</p>
   </div>
-  <p class="tnote" data-s="3">Se listaron, pero no se implementaron ni se midió su efecto. A continuación: cómo funciona cada una, con datos reales de OASIS.</p>
-</section>
-
-<!-- 13 BIAS FIELD -->
-<section class="scene dark" id="bias" data-tr="diag">
-  <div class="t">
-    <p class="eyebrow">Técnica 1 · limpieza</p><h2 class="ttl" style="font-size:80px">Bias field correction</h2>
-    <p class="eq">observada = real <em>× campo</em> + ruido</p>
-    <p class="desc">El escáner agrega un “campo” suave de brillo: el mismo tejido se ve más claro de un lado. <b style="color:#fff">N4</b> estima ese campo con curvas suaves (B-splines), afinando el histograma en cada iteración, y luego lo divide.</p>
-  </div>
-  <div class="stage4">
-    <img id="bsClean" src="assets/generated/bias_clean.png" alt="Corte limpio">
-    <img id="bsCorrupt" src="assets/generated/bias_corrupt.png" alt="Corte con campo de brillo" style="opacity:0">
-    <img id="bsFixed" src="assets/generated/bias_corrected.png" alt="Corte corregido con N4" style="opacity:0">
-    <div class="rowline" id="bsRow"></div>
-    <span class="lbl" id="bsLbl">imagen limpia</span>
-  </div>
-  <div class="fieldw"><img src="assets/generated/bias_field.png" alt="Campo de brillo estimado por N4"><span class="lbl">campo estimado por N4</span></div>
-  <div class="cvs"><div><b id="cvC">—</b><span>variación en materia blanca, con campo</span></div><div><b id="cvF" style="color:var(--sky)">—</b><span>después de N4</span></div></div>
-  <svg class="prof" id="bsProf" viewBox="0 0 900 250"></svg>
+  <div class="dots" id="cqDots"></div>
+  <div class="final" id="cqFinal"></div>
   <i data-s="1" hidden></i><i data-s="2" hidden></i><i data-s="3" hidden></i><i data-s="4" hidden></i>
 </section>
 
-<!-- 14 SKULL STRIPPING -->
-<section class="scene light" id="skull" data-tr="rise">
-  <div class="t"><p class="eyebrow">Técnica 2 · limpieza</p><h2 class="ttl" style="font-size:84px">Skull stripping</h2><p class="lead" style="font-size:28px">Cinco pasos clásicos para quedarnos solo con el cerebro.</p></div>
-  <div class="steps" id="skSteps">
-    <div class="stp"><b>0</b><span>Imagen de entrada</span><small>T1 con cráneo, piel y cuello.</small></div>
-    <div class="stp"><b>1</b><span>Umbral de Otsu</span><small>Separa tejido del fondo eligiendo el umbral que mejor divide el histograma.</small></div>
-    <div class="stp"><b>2</b><span>Erosión</span><small>Adelgaza la máscara y corta los puentes entre cerebro y cráneo.</small></div>
-    <div class="stp"><b>3</b><span>Componente más grande</span><small>El cerebro es la pieza conectada más grande: el resto se descarta.</small></div>
-    <div class="stp"><b>4</b><span>Dilatar y rellenar</span><small>Recupera el borde perdido y rellena los ventrículos.</small></div>
-    <div class="stp"><b>5</b><span>Aplicar la máscara</span><small>Comparamos contra la máscara oficial de OASIS.</small></div>
+<!-- 13 TÉCNICAS (un solo slide interactivo) -->
+<section class="scene dark" id="tec" data-tr="zoom">
+  <div class="hd"><p class="eyebrow">Lo que propuso el semestre pasado</p><h2 class="ttl">Técnicas de <em>preprocesamiento</em></h2></div>
+  <nav class="tabs" aria-label="Técnicas">
+    <span class="tg">Limpieza</span>
+    <button class="tab" type="button" data-i="0">Bias field</button>
+    <button class="tab" type="button" data-i="1">Skull stripping</button>
+    <button class="tab" type="button" data-i="2">FreeSurfer</button>
+    <span class="tg">Selección de cortes</span>
+    <button class="tab" type="button" data-i="3">Entropía</button>
+    <button class="tab" type="button" data-i="4">Slice ranking</button>
+  </nav>
+
+  <div class="pane" data-p="0">
+    <div class="tx"><h3>Bias field correction</h3><p>El escáner ilumina más un lado de la cabeza que el otro. La corrección empareja el brillo para que el mismo tejido se vea igual en todas partes.</p><small>arrastra la línea</small></div>
+    <div class="cmp noadv" id="cmp">
+      <img src="assets/generated/bias_corrupt.png" alt="Antes de la corrección">
+      <div class="after"><img src="assets/generated/bias_corrected.png" alt="Después de la corrección"></div>
+      <div class="hdl"><i></i></div>
+      <span class="lb l">antes</span><span class="lb r">después</span>
+    </div>
   </div>
-  <div class="viewer" id="skView">
-    <img src="assets/generated/skull_0.png" alt="Entrada"><img src="assets/generated/skull_1.png" alt="Umbral"><img src="assets/generated/skull_2.png" alt="Erosión">
-    <img src="assets/generated/skull_3.png" alt="Componente más grande"><img src="assets/generated/skull_4.png" alt="Máscara final"><img src="assets/generated/skull_5.png" alt="Cerebro sin cráneo">
-    <img class="truth" src="assets/generated/skull_truth.png" alt="Máscara oficial de OASIS" style="opacity:0">
+
+  <div class="pane" data-p="1">
+    <div class="tx"><h3>Skull stripping</h3><p>Se encuentra la región que es cerebro, se selecciona, y todo lo demás (cráneo, piel, ojos) se quita.</p>
+      <ol class="ph" id="skPh"><li>Cabeza completa</li><li>Se selecciona el cerebro</li><li>Se quita lo demás</li></ol></div>
+    <div class="vw" id="skVw">
+      <img class="ly sk" src="assets/generated/skull_layer_skull.png" alt="Cráneo y piel">
+      <img class="ly br" src="assets/generated/skull_layer_brain.png" alt="Cerebro">
+      <img class="ly sel" src="assets/generated/skull_layer_select.png" alt="Región seleccionada">
+    </div>
   </div>
-  <div class="dice"><b id="skDice">0.00</b><span>Dice contra la máscara oficial (1 = idéntica)</span><b id="skDice3" style="font-size:44px;margin-top:22px;color:var(--indigo)">0.00</b><span>en toda la cabeza, corte por corte: falla cerca de ojos y cuello</span></div>
-  <i data-s="1" hidden></i><i data-s="2" hidden></i><i data-s="3" hidden></i><i data-s="4" hidden></i><i data-s="5" hidden></i><i data-s="6" hidden></i>
+
+  <div class="pane" data-p="2">
+    <div class="tx"><h3>FreeSurfer</h3><p>Un programa que recibe la resonancia y <b>etiqueta cada punto del cerebro</b>: líquido, materia gris o materia blanca (y ~100 regiones más finas). Con eso se miden volúmenes, por ejemplo cuánto se encoge la materia gris.</p>
+      <p class="sm">Tarda 6–10 h por persona. Aquí se ve la segmentación que OASIS ya incluye.</p>
+      <div class="leg noadv" id="fsLeg">
+        <button type="button" data-t="all">todo</button>
+        <button type="button" data-t="csf"><i style="background:#A9CDE5"></i>líquido</button>
+        <button type="button" data-t="gm"><i style="background:#7D7ECA"></i>materia gris</button>
+        <button type="button" data-t="wm"><i style="background:#00706F"></i>materia blanca</button>
+      </div></div>
+    <div class="vw" id="fsVw">
+      <img class="ly" src="assets/generated/seg_brain.png" alt="Cerebro">
+      <img class="ly t csf" src="assets/generated/seg_csf.png" alt="Líquido cefalorraquídeo">
+      <img class="ly t gm" src="assets/generated/seg_gm.png" alt="Materia gris">
+      <img class="ly t wm" src="assets/generated/seg_wm.png" alt="Materia blanca">
+    </div>
+  </div>
+
+  <div class="pane" data-p="3">
+    <div class="tx"><h3>Entropía de Shannon</h3><p>¿Cuánta información trae un corte? Si casi todo es negro (un solo tono), poca. Si está lleno de cerebro (muchos tonos de gris), mucha. Sirve para descartar los cortes vacíos.</p><small>arrastra sobre la curva</small></div>
+    <div class="ent">
+      <div class="sprite" id="enImg" data-sprite="entropy"></div>
+      <div class="meter"><span>información</span><div class="bar"><i id="enBar"></i></div><div class="ends"><em>poca</em><em>mucha</em></div></div>
+      <svg class="curve noadv" id="enCurve" viewBox="0 0 1032 170"></svg>
+    </div>
+  </div>
+
+  <div class="pane" data-p="4">
+    <div class="tx"><h3>Slice ranking</h3><p>Cada escaneo trae 61 cortes, pero no todos sirven igual. Se le pone una calificación a cada corte (información + cantidad de cerebro + nitidez) y la red solo ve los mejores.</p>
+      <ol class="ph" id="rkPh"><li>61 cortes en orden</li><li>Calificación de cada uno</li><li>Se ordenan</li><li>Nos quedamos con los mejores 10</li></ol></div>
+    <div class="board" id="rkBoard"></div>
+  </div>
+  <i data-s="1" hidden></i><i data-s="2" hidden></i><i data-s="3" hidden></i><i data-s="4" hidden></i>
 </section>
 
-<!-- 15 FREESURFER -->
-<section class="scene dark" id="freesurfer" data-tr="door">
-  <div class="t"><p class="eyebrow">Técnica 3 · limpieza</p><h2 class="ttl" style="font-size:84px">FreeSurfer: <em>todo el pipeline</em></h2></div>
-  <div class="pipe" data-s="1">
-    <div class="belt"><i></i></div>
-    <div class="stn" style="left:6%;--d:.1s"><div class="bx"><svg viewBox="0 0 70 70" fill="none" stroke="#fff" stroke-width="5"><rect x="10" y="10" width="50" height="50" rx="8"/><path d="M10 35h50"/></svg></div><span>Corrección de movimiento</span></div>
-    <div class="stn" style="left:28%;--d:.8s"><div class="bx"><svg viewBox="0 0 70 70" fill="none" stroke="#fff" stroke-width="5"><circle cx="35" cy="35" r="24" stroke-dasharray="6 6"/><circle cx="35" cy="36" r="14"/></svg></div><span>Skull stripping</span></div>
-    <div class="stn" style="left:50%;--d:1.5s"><div class="bx"><svg viewBox="0 0 70 70" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"><path d="M10 50q12-30 25 0t25 0"/></svg></div><span>Corrección de bias</span></div>
-    <div class="stn" style="left:72%;--d:2.2s"><div class="bx"><svg viewBox="0 0 70 70" fill="none" stroke="#fff" stroke-width="5"><rect x="12" y="12" width="46" height="46" rx="6"/><path d="M12 35h46M35 12v46"/></svg></div><span>Registro a un atlas</span></div>
-    <div class="stn" style="left:94%;--d:2.9s"><div class="bx"><svg viewBox="0 0 70 70"><circle cx="35" cy="35" r="26" fill="#A9CDE5"/><circle cx="35" cy="35" r="17" fill="#7D7ECA"/><circle cx="35" cy="35" r="8" fill="#00706F"/></svg></div><span>Segmentación y parcelación</span></div>
-  </div>
-  <div class="facts" data-s="2">
-    <div><b>6–10 h</b><span>por escaneo, por persona</span></div>
-    <div><b>~100</b><span>regiones etiquetadas (corteza, hipocampo, ventrículos…)</span></div>
-    <div><b>⚠</b><span>Sensible al contraste; puede fallar sin avisar. Requiere licencia (gratuita) y Linux/Mac.</span></div>
-  </div>
-  <div class="segw" data-s="3"><img src="assets/generated/seg_brain.png" alt="Cerebro sin cráneo"><img class="lab" src="assets/generated/seg_labels.png" alt="Segmentación de tejidos"></div>
-  <div class="vols" data-s="3" id="fsVols"></div>
-</section>
-
-<!-- 16 ENTROPÍA -->
-<section class="scene light" id="entropia" data-tr="circle">
-  <div class="t"><p class="eyebrow">Técnica 4 · selección de cortes</p><h2 class="ttl" style="font-size:80px">Entropía de Shannon</h2></div>
-  <div class="formula">H = −Σ p(i) · log₂ p(i)<small>p(i) es la fracción de píxeles con brillo i. Un corte con pura textura y estructura tiene H alta; uno casi vacío o uniforme, H baja.</small></div>
-  <div class="sw sprite" data-sprite="entropy"></div>
-  <div class="hnum"><b id="enH">0.00</b><span>bits en este corte</span><b id="enZ" style="font-size:40px;margin-top:20px;color:var(--lav)">z 0</b><span>posición en la cabeza</span></div>
-  <svg class="curve" id="enCurve" viewBox="0 0 1664 220"></svg>
-  <div class="hists" id="enHists"></div>
-  <i data-s="1" hidden></i><i data-s="2" hidden></i>
-</section>
-
-<!-- 17 SLICE RANKING -->
-<section class="scene tint" id="ranking" data-tr="flip">
-  <div class="t"><p class="eyebrow">Técnica 5 · selección de cortes</p><h2 class="ttl" style="font-size:80px">Slice ranking</h2></div>
-  <div class="crit"><span class="chip">entropía</span><span class="chip">área de tejido</span><span class="chip">nitidez (Laplaciano)</span><span class="chip" style="background:var(--teal);color:#fff">= score</span></div>
-  <div class="board" id="rkBoard"></div>
-  <p class="rk-note" id="rkNote">Los 61 cortes de un escaneo real de Kaggle, en orden anatómico.</p>
-  <i data-s="1" hidden></i><i data-s="2" hidden></i><i data-s="3" hidden></i>
-</section>
-
-<!-- 18 ¿Y EL PROFESOR? -->
+<!-- 14 ¿Y EL PROFESOR? -->
 <section class="scene dark" id="profe" data-tr="zoom">
   <div class="t"><p class="eyebrow">Una pregunta incómoda</p><h2 class="ttl">¿Y el <em>profesor</em>?</h2></div>
   <div class="stagep">
@@ -301,7 +284,7 @@
   </div>
 </section>
 
-<!-- 19 LIMITACIONES -->
+<!-- 15 LIMITACIONES -->
 <section class="scene light" id="limites" data-tr="doorv">
   <div class="hd"><p class="eyebrow">Siendo honestos</p><h2 class="ttl">Limitaciones</h2></div>
   <div class="cols">
@@ -320,25 +303,32 @@
   </div>
 </section>
 
-<!-- 20 SIGUIENTES PASOS -->
-<section class="scene light" id="pasos" data-tr="zoom">
-  <div class="pt"><p class="eyebrow">Hacia dónde vamos</p><h2 class="ttl" style="font-size:84px">Siguientes pasos</h2></div>
-  <svg class="road" viewBox="0 0 1920 1080"><path class="rd-bg" d="M120 565H1800"/><path class="rd" pathLength="1" d="M120 565H1800"/></svg>
-  <div class="nd2 n1" style="left:300px"><svg viewBox="0 0 60 60" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 14l-10 16 10 16M42 14l10 16-10 16"/></svg></div>
-  <div class="nd2 n2" style="left:630px"><svg viewBox="0 0 60 60" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M30 8l20 8v14c0 14-9 20-20 24C19 50 10 44 10 30V16z"/><path d="M21 31l7 7 12-13"/></svg></div>
-  <div class="nd2 n3" style="left:960px"><svg viewBox="0 0 60 60" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"><circle cx="30" cy="30" r="20" stroke-dasharray="6 5"/><circle cx="30" cy="31" r="10"/></svg></div>
-  <div class="nd2 n4" style="left:1290px"><svg viewBox="0 0 60 60" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 50V30M24 50V14M36 50V24M48 50V36"/><path d="M8 52h44"/></svg></div>
-  <div class="nd2 n5" style="left:1620px"><svg viewBox="0 0 60 60" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="30" cy="20" r="9"/><path d="M12 52q18-26 36 0"/></svg></div>
-  <div class="cd2 up c1" style="left:300px"><span class="no">01</span><h3>Todo reproducible</h3><p>Este repo y el notebook de OASIS como punto de partida común.</p></div>
-  <div class="cd2 dn c2" style="left:630px"><span class="no">02</span><h3>Línea base honesta</h3><p>CNN con split por persona y métricas balanceadas (F1 macro, AUC).</p></div>
-  <div class="cd2 up c3" style="left:960px"><span class="no">03</span><h3>Pipeline 3D</h3><p>N4, skull stripping y registro sobre los volúmenes originales de OASIS.</p></div>
-  <div class="cd2 dn c4" style="left:1290px"><span class="no">04</span><h3>Una técnica a la vez</h3><p>Ablación: medir cuánto mueve cada técnica cada métrica.</p></div>
-  <div class="cd2 up c5" style="left:1620px"><span class="no">05</span><h3>Asesor y reporte</h3><p>Sumar profesor(a), escribir resultados y valorar ADNI.</p></div>
-  <p class="meta" data-s="6">Meta del semestre: saber <b>qué técnica mejora qué métrica</b>, con evidencia.</p>
-  <i data-s="1" hidden></i><i data-s="2" hidden></i><i data-s="3" hidden></i><i data-s="4" hidden></i><i data-s="5" hidden></i>
+<!-- 16 POSIBLES PREGUNTAS -->
+<section class="scene light" id="preguntas" data-tr="zoom">
+  <div class="hd"><p class="eyebrow">Para pensar juntos</p><h2 class="ttl">Posibles <em>preguntas</em></h2></div>
+  <div class="cloud noadv" id="qCloud">
+    <span data-w="1">¿Quitar el cráneo mejora la clasificación?</span>
+    <span data-w="1">¿La red aprende demencia… o edad?</span>
+    <span data-w="1">¿Cuántos cortes por escaneo necesita la red?</span>
+    <span data-w="1">¿2D o 3D?</span>
+    <span data-w="1">¿Qué hacemos con Moderate Dementia?</span>
+    <span data-w="2">¿Sano vs. demencia, o 4 clases?</span>
+    <span data-w="2">¿Importa corregir el brillo?</span>
+    <span data-w="2">¿Cortes por entropía o al azar?</span>
+    <span data-w="2">¿Qué métrica es justa con clases desbalanceadas?</span>
+    <span data-w="2">¿Separar por persona cambia todo?</span>
+    <span data-w="3">¿Sirve transfer learning?</span>
+    <span data-w="3">¿Qué regiones del cerebro mira la red?</span>
+    <span data-w="3">¿Data augmentation ayuda?</span>
+    <span data-w="3">¿OASIS-3 o ADNI después?</span>
+    <span data-w="3">¿Los re-escaneos cuentan como datos nuevos?</span>
+    <span data-w="3">¿Cuánto cómputo necesitamos?</span>
+    <span data-w="3">¿Quién nos asesora?</span>
+  </div>
+  <i data-s="1" hidden></i><i data-s="2" hidden></i><i data-s="3" hidden></i>
 </section>
 
-<!-- 21 FIN -->
+<!-- 17 FIN -->
 <section class="scene dark" id="fin" data-tr="circle">
   <div class="bye"><h2>¿Preguntas?</h2><p>Notebook, datos y esta presentación:</p><p class="mono">github.com/Mmateo101/presentation-neuroimaging</p></div>
   <svg class="hx2" viewBox="0 0 1200 200"><path id="finA" fill="none" stroke="#00706F" stroke-width="10" stroke-linecap="round"/><path id="finB" fill="none" stroke="#A9CDE5" stroke-width="10" stroke-linecap="round"/></svg>

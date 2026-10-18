@@ -251,124 +251,184 @@
     };
   })();
 
-  /* ---------------- 13 bias field ---------------- */
+  /* ---------------- 11 cuántos datos sirven: from images to usable people ---------------- */
   (function () {
-    var B = D.bias;
-    if (!B) return;
-    set('cvC', B.cv_corrupt.toFixed(3)); set('cvF', B.cv_corrected.toFixed(3));
-    $('#bsRow').style.top = (B.row / B.h * 100) + '%';
-    var s = $('#bsProf'), W = 900, H = 250;
-    function path(arr) {
-      var mx = 1.6, d = '';
-      arr.forEach(function (v, i) { d += (i ? 'L' : 'M') + (i / (arr.length - 1) * W).toFixed(1) + ' ' + (H - 20 - Math.min(v, mx) / mx * (H - 40)).toFixed(1); });
-      return d;
-    }
-    svg('path', { d: path(B.profile_clean), stroke: '#5B6470', 'stroke-dasharray': '8 8' }, s);
-    var ln = svg('path', { 'class': 'p-line', d: path(B.profile_corrupt) }, s);
-    var lbl = svg('text', { x: 0, y: 18 }, s); lbl.textContent = 'brillo a lo largo de la línea amarilla · punteado = imagen limpia';
-    var tm;
-    SH.bias = function (sc, step) {
-      var show = step >= 3 ? 'bsFixed' : step >= 1 ? 'bsCorrupt' : 'bsClean';
-      ['bsClean', 'bsCorrupt', 'bsFixed'].forEach(function (id) { $('#' + id).style.opacity = id === show ? 1 : 0; });
-      set('bsLbl', step >= 3 ? 'corregida con N4' : step >= 1 ? 'con campo de brillo' : 'imagen limpia');
-      clearTimeout(tm);
-      ln.style.d = 'path("' + path(B.profile_corrupt) + '")';
-      if (step >= 4) tm = setTimeout(function () { ln.style.d = 'path("' + path(B.profile_corrected) + '")'; }, 900);
-    };
-    SH.bias.reset = function () { clearTimeout(tm); };
-  })();
-
-  /* ---------------- 14 skull stripping ---------------- */
-  (function () {
-    var K = D.skull || {};
-    var imgs = $$('#skView img:not(.truth)'), steps = $$('#skSteps .stp'), truth = $('#skView .truth');
-    SH.skull = function (sc, step) {
-      var k = Math.min(step, 5);
-      imgs.forEach(function (im, i) { im.classList.toggle('show', i === k); });
-      steps.forEach(function (st, i) { st.classList.toggle('on', i === k); st.classList.toggle('done', i < k); });
-      truth.style.opacity = step >= 6 ? 1 : 0;
-      if (step >= 6) { countTo($('#skDice'), K.dice_2d, 3); countTo($('#skDice3'), K.dice_3d, 3); }
-    };
-  })();
-
-  /* ---------------- 15 freesurfer: tissue volumes ---------------- */
-  (function () {
-    var S = D.seg || {}, wrap = $('#fsVols');
-    var items = [['csf', 'Líquido cefalorraquídeo', '#A9CDE5'], ['gm', 'Materia gris', '#7D7ECA'], ['wm', 'Materia blanca', '#00706F']];
-    var mx = Math.max(S.csf || 1, S.gm || 1, S.wm || 1);
-    items.forEach(function (it) {
-      wrap.insertAdjacentHTML('beforeend', '<div class="vr"><span>' + it[1] + '</span><em>' + fmt(S[it[0]] || 0, 0) + ' mL</em><div class="vb" data-w="' + ((S[it[0]] || 0) / mx * 100) + '" style="background:' + it[2] + '"></div></div>');
+    var C = D.classes || [], by = {};
+    C.forEach(function (c) { by[c.key] = c; });
+    var un = D.nd_unrated || 0, wrap = $('#cqDots'), k = 0;
+    ['nd', 'vmd', 'md', 'mod'].forEach(function (key) {
+      var n = by[key] ? by[key].subjects : 0;
+      for (var i = 0; i < n; i++) {
+        var d = document.createElement('i');
+        d.style.background = CLS[key];
+        d.style.setProperty('--d', (k++ * 4) + 'ms');
+        if (key === 'nd' && i < un) d.className = 'un';
+        if (key === 'mod') d.className = 'mod';
+        wrap.appendChild(d);
+      }
     });
-    SH.freesurfer = function (sc, step) {
-      $$('.vb', sc).forEach(function (b) { b.style.width = step >= 3 ? b.dataset.w + '%' : 0; });
+    var nd = by.nd ? by.nd.subjects - un : 0, vmd = by.vmd ? by.vmd.subjects : 0, md = by.md ? by.md.subjects : 0;
+    var mod = by.mod ? by.mod.subjects : 0, ppl = D.n_subjects || 0, age = D.nd_unrated_age || [18, 57];
+    $('#cqFinal').innerHTML = [['nd', nd, 'Non Demented (CDR 0)'], ['vmd', vmd, 'Very mild'], ['md', md, 'Mild']].map(function (r) {
+      return '<div><b style="color:' + CLS[r[0]] + '">' + r[1] + '</b>' + r[2] + '</div>';
+    }).join('');
+    var states = [
+      [fmt(D.n_images || 0), 'imágenes', 'Parece muchísimo…'],
+      [fmt(ppl), 'personas', 'Cada persona aporta unas <b>' + fmt(D.images_per_subject_median || 0) + ' imágenes casi idénticas</b>. Lo que cuenta de verdad son las personas.'],
+      [fmt(ppl - un), 'personas', '<b>' + un + ' “Non Demented”</b> nunca fueron evaluadas (sin CDR, ' + age[0] + '–' + age[1] + ' años). Si se quedan, la red aprende edad.'],
+      [fmt(ppl - un - mod), 'personas', '<b>Moderate Dementia son ' + mod + ' personas</b>: no alcanza para entrenar y probar.'],
+      [fmt(ppl - un - mod), 'personas útiles', 'En 3 clases. Este es el tamaño real del problema.']];
+    SH.cuantos = function (sc, step) {
+      var st = states[Math.min(step, 4)];
+      set('cqNum', st[0]); set('cqUnit', st[1]); $('#cqTxt').innerHTML = st[2];
     };
   })();
 
-  /* ---------------- 16 entropía ---------------- */
+  /* ---------------- 12 técnicas: one interactive slide, one tab per technique ---------------- */
   (function () {
-    var E = D.entropy;
-    if (!E) return;
-    var s = $('#enCurve'), W = 1664, H = 220, c = E.curve, n = c.length, mx = Math.max.apply(null, c);
-    var X = function (z) { return z / (n - 1) * W; }, Y = function (v) { return H - 30 - v / mx * (H - 50); };
-    var d = '', da = '';
-    c.forEach(function (v, z) { d += (z ? 'L' : 'M') + X(z).toFixed(1) + ' ' + Y(v).toFixed(1); });
-    E.area.forEach(function (v, z) { da += (z ? 'L' : 'M') + X(z).toFixed(1) + ' ' + (H - 30 - v / Math.max.apply(null, E.area) * (H - 50)).toFixed(1); });
-    svg('line', { x1: 0, x2: W, y1: H - 30, y2: H - 30, stroke: '#C9D3DC', 'stroke-width': 2 }, s);
-    svg('path', { d: da, fill: 'none', stroke: '#7D7ECA', 'stroke-width': 3, 'stroke-dasharray': '6 6' }, s);
-    svg('path', { d: d, fill: 'none', stroke: '#00706F', 'stroke-width': 5 }, s);
-    var t1 = svg('text', { x: 0, y: H }, s); t1.textContent = 'base del cráneo';
-    var t2 = svg('text', { x: W, y: H, 'text-anchor': 'end' }, s); t2.textContent = 'parte alta de la cabeza';
-    var t3 = svg('text', { x: W - 10, y: 16, 'text-anchor': 'end' }, s); t3.textContent = '— entropía   - - área de cerebro';
-    var cur = svg('line', { y1: 0, y2: H - 30, stroke: '#E0A22E', 'stroke-width': 4 }, s);
-    var dot = svg('circle', { r: 10, fill: '#E0A22E' }, s);
-    var sp = $('#entropia .sprite'), zs = E.sprite.z;
-    TICK.entropia = function (t) {
-      var f = pingpong(t, 9, zs.length), z = zs[f];
-      setFrame(sp, f);
-      cur.setAttribute('x1', X(z)); cur.setAttribute('x2', X(z));
-      dot.setAttribute('cx', X(z)); dot.setAttribute('cy', Y(c[z]));
-      set('enH', c[z].toFixed(2)); set('enZ', 'z ' + z);
+    var sc = $('#tec'), tabs = $$('.tab', sc), panes = $$('.pane', sc), t0 = 0, cur = -1;
+    tabs.forEach(function (b) { b.addEventListener('click', function () { if (window.DECK) DECK.setStep(+b.dataset.i); }); });
+    SH.tec = function (s, step) {
+      tabs.forEach(function (b, i) { b.classList.toggle('on', i === step); });
+      panes.forEach(function (p, i) { p.classList.toggle('on', i === step); });
+      if (step !== cur) { cur = step; t0 = 0; manual = false; fsManual = false; }
     };
-    var hw = $('#enHists'), names = { low: 'casi vacío', mid: 'nivel medio', high: 'máxima entropía' };
-    ['low', 'mid', 'high'].forEach(function (k) {
-      var h = E.examples[k], m2 = Math.max.apply(null, h.hist), bars = h.hist.map(function (v) { return '<i data-h="' + (v / m2 * 100) + '"></i>'; }).join('');
-      hw.insertAdjacentHTML('beforeend', '<div class="hb"><img src="' + G + 'entropy_' + k + '.png" alt="Corte ' + h.z + '"><div class="bars">' + bars + '</div><p>' + names[k] + ' · z ' + h.z + ' · <span style="color:var(--teal)">H = ' + h.entropy.toFixed(2) + ' bits</span></p></div>');
+    SH.tec.reset = function () { cur = -1; };
+
+    /* bias: before/after slider; sweeps by itself until someone drags it */
+    var cmp = $('#cmp'), manual = false;
+    function setX(p) { cmp.style.setProperty('--x', (p * 100).toFixed(2) + '%'); }
+    function fromEvent(e) { var r = cmp.getBoundingClientRect(); return Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)); }
+    cmp.addEventListener('pointerdown', function (e) { manual = true; cmp.setPointerCapture(e.pointerId); setX(fromEvent(e)); });
+    cmp.addEventListener('pointermove', function (e) { if (e.buttons) setX(fromEvent(e)); });
+
+    /* skull: three phases on a loop */
+    var sk = $('#skVw'), skPh = $$('#skPh li');
+    function skPhase(p) {
+      sk.className = 'vw' + (p ? ' p' + p : '');
+      skPh.forEach(function (li, i) { li.classList.toggle('on', i === p); li.classList.toggle('done', i < p); });
+    }
+
+    /* freesurfer: cycles through tissues; clicking the legend takes control */
+    var fs = $('#fsVw'), fsLeg = $$('#fsLeg button'), fsManual = false, order = ['all', 'csf', 'gm', 'wm'];
+    function fsShow(k) { fs.className = 'vw ' + k; fsLeg.forEach(function (b) { b.classList.toggle('on', b.dataset.t === k); }); }
+    fsLeg.forEach(function (b) { b.addEventListener('click', function () { fsManual = true; fsShow(b.dataset.t); }); });
+
+    /* entropy: image + information meter + draggable curve */
+    var E = D.entropy, enImg = $('#enImg'), enBar = $('#enBar'), cv = $('#enCurve'), enManual = null, enDraw = function () { };
+    if (E) {
+      var c = E.curve, n = c.length, W = 1032, H = 170, mx = Math.max.apply(null, c), zs = E.sprite.z;
+      var X = function (z) { return z / (n - 1) * W; }, Y = function (v) { return H - 34 - v / mx * (H - 50); };
+      var d = '';
+      c.forEach(function (v, z) { d += (z ? 'L' : 'M') + X(z).toFixed(1) + ' ' + Y(v).toFixed(1); });
+      svg('path', { d: d + 'L' + W + ' ' + (H - 34) + 'L0 ' + (H - 34) + 'Z', fill: '#7D7ECA33' }, cv);
+      svg('path', { d: d, fill: 'none', stroke: '#7D7ECA', 'stroke-width': 4 }, cv);
+      var a = svg('text', { x: 0, y: H - 4 }, cv); a.textContent = 'base de la cabeza';
+      var b2 = svg('text', { x: W, y: H - 4, 'text-anchor': 'end' }, cv); b2.textContent = 'parte alta';
+      var cur2 = svg('line', { y1: 0, y2: H - 34, stroke: '#F2B84B', 'stroke-width': 4 }, cv);
+      var dot = svg('circle', { r: 11, fill: '#F2B84B' }, cv);
+      enDraw = function (f) {
+        var z = zs[f];
+        setFrame(enImg, f);
+        cur2.setAttribute('x1', X(z)); cur2.setAttribute('x2', X(z));
+        dot.setAttribute('cx', X(z)); dot.setAttribute('cy', Y(c[z]));
+        enBar.style.transform = 'scaleX(' + (c[z] / mx).toFixed(3) + ')';
+      };
+      var pick = function (e) {
+        var r = cv.getBoundingClientRect(), z = (e.clientX - r.left) / r.width * (n - 1), best = 0;
+        zs.forEach(function (zz, i) { if (Math.abs(zz - z) < Math.abs(zs[best] - z)) best = i; });
+        enManual = best; enDraw(best);
+      };
+      cv.addEventListener('pointerdown', function (e) { cv.setPointerCapture(e.pointerId); pick(e); });
+      cv.addEventListener('pointermove', function (e) { if (e.buttons) pick(e); });
+    }
+
+    /* ranking: 61 thumbnails -> scores -> sorted -> top 10 */
+    var R = D.ranking, board = $('#rkBoard'), cells = [], rkPh = $$('#rkPh li');
+    if (R) {
+      var S = R.slices, meta = D.scan_sprites[R.key], smin = Math.min.apply(null, S.score), smax = Math.max.apply(null, S.score);
+      for (var i = 0; i < S.slice.length; i++) {
+        var el = document.createElement('div');
+        el.className = 'cell' + (S.rank[i] <= R.top_k ? ' top' : '');
+        el.innerHTML = '<div class="sprite"></div><div class="sb"></div>';
+        el.style.setProperty('--w', ((S.score[i] - smin) / (smax - smin) * .9 + .1).toFixed(3));
+        board.appendChild(el);
+        var sp = $('.sprite', el); initSprite(sp, meta); setFrame(sp, S.slice[i] - meta.first_slice);
+        cells.push({ el: el, rank: S.rank[i] });
+      }
+    }
+    function lay(sorted) {
+      (sorted ? cells.slice().sort(function (a, b) { return a.rank - b.rank; }) : cells).forEach(function (o, j) {
+        o.el.style.left = (j % 9) * 100 + 'px'; o.el.style.top = Math.floor(j / 9) * 78 + 'px';
+      });
+    }
+    lay(false);
+    function rkPhase(p) {
+      board.className = 'board' + (p >= 1 ? ' p1' : '') + (p >= 3 ? ' p3' : '');
+      lay(p >= 2);
+      rkPh.forEach(function (li, i) { li.classList.toggle('on', i === p); li.classList.toggle('done', i < p); });
+    }
+
+    var last = {};
+    TICK.tec = function (t) {
+      if (!t0) t0 = t;
+      var e = t - t0, p;
+      if (cur === 0 && !manual) setX(.5 + .32 * Math.sin(e * 1.1));
+      if (cur === 1) { p = Math.floor((e % 9) / 3); if (last.sk !== p) { last.sk = p; skPhase(p); } }
+      if (cur === 2 && !fsManual) { p = order[Math.floor(e / 2.4) % 4]; if (last.fs !== p) { last.fs = p; fsShow(p); } }
+      if (cur === 3 && E && enManual === null) enDraw(pingpong(e, 7, E.sprite.z.length));
+      if (cur === 4 && R) { p = Math.min(3, Math.floor((e % 12) / 2.6)); if (last.rk !== p) { last.rk = p; rkPhase(p); } }
+      if (cur !== 3) enManual = null;
+      if (cur !== last.cur) { last = { cur: cur }; }
+    };
+  })();
+
+  /* ---------------- 15 posibles preguntas: loose word cloud ---------------- */
+  (function () {
+    var cloud = $('#qCloud'), items = $$('span', cloud), cols = ['#00706F', '#3D358B', '#7D7ECA', '#1F1F1F', '#4E8FB8'];
+    var seed = 11; function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+    function layout() {
+      var W = cloud.clientWidth, H = cloud.clientHeight, placed = [];
+      items.forEach(function (el, i) {
+        el.style.fontSize = Math.round(36 + rnd() * 26 - (el.textContent.length > 34 ? 4 : 0)) + 'px';
+        el.style.color = cols[i % cols.length];
+        el.style.setProperty('--t', (7 + rnd() * 6).toFixed(1) + 's');
+        el.style.setProperty('--dx', ((rnd() - .5) * 26).toFixed(0) + 'px');
+        el.style.setProperty('--dy', ((rnd() - .5) * 22).toFixed(0) + 'px');
+        var w = el.offsetWidth, h = el.offsetHeight, a = rnd() * 6.28, r = 0, x, y, ok;
+        for (var k = 0; k < 2000; k++) {
+          x = W / 2 + r * 1.9 * Math.cos(a) - w / 2; y = H / 2 + r * Math.sin(a) - h / 2;
+          ok = x >= 0 && y >= 0 && x + w <= W && y + h <= H && placed.every(function (p) {
+            return x + w + 26 < p.x || p.x + p.w + 26 < x || y + h + 18 < p.y || p.y + p.h + 18 < y;
+          });
+          if (ok) break;
+          a += .35; r += 1.2;
+        }
+        placed.push({ x: x, y: y, w: w, h: h });
+        el.style.left = x + 'px'; el.style.top = y + 'px';
+      });
+    }
+    (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(layout);
+    items.forEach(function (el) {
+      el.addEventListener('click', function () {
+        var was = el.classList.contains('f');
+        items.forEach(function (o) { o.classList.remove('f'); });
+        cloud.classList.toggle('focus', !was);
+        if (!was) el.classList.add('f');
+      });
     });
-    SH.entropia = function (sc, step) { $$('.bars i', hw).forEach(function (b) { b.style.height = step >= 2 ? b.dataset.h + '%' : 0; }); };
-  })();
-
-  /* ---------------- 17 slice ranking ---------------- */
-  (function () {
-    var R = D.ranking;
-    if (!R) return;
-    var board = $('#rkBoard'), S = R.slices, n = S.slice.length, meta = D.scan_sprites[R.key], cells = [];
-    var smin = Math.min.apply(null, S.score), smax = Math.max.apply(null, S.score);
-    for (var i = 0; i < n; i++) {
-      var c = document.createElement('div');
-      c.className = 'cell';
-      c.innerHTML = '<div class="sprite"></div><div class="sb"></div><span>' + S.slice[i] + '</span>';
-      c.style.setProperty('--w', ((S.score[i] - smin) / (smax - smin) * 92 + 8) + '%');
-      if (S.rank[i] <= R.top_k) c.classList.add('top-c');
-      board.appendChild(c);
-      var sp = $('.sprite', c);
-      initSprite(sp, meta); setFrame(sp, S.slice[i] - meta.first_slice);
-      cells.push({ el: c, i: i, rank: S.rank[i] });
-    }
-    function lay(order) {
-      order.forEach(function (o, j) { o.el.style.left = (j % 11) * 151 + 'px'; o.el.style.top = Math.floor(j / 11) * 100 + 'px'; });
-    }
-    var notes = ['Los 61 cortes de un escaneo real de Kaggle, en orden anatómico.',
-      'Cada corte recibe un <b>score</b>: promedio de entropía, área y nitidez (estandarizadas).',
-      'Ordenados por score: los <b>' + R.top_k + ' mejores</b> quedan arriba.',
-      'Solo esos <b>' + R.top_k + ' cortes</b> por escaneo entrarían a la CNN: menos ruido y menos redundancia.'];
-    SH.ranking = function (sc, step) {
-      lay(step >= 2 ? cells.slice().sort(function (a, b) { return a.rank - b.rank; }) : cells);
-      cells.forEach(function (o) { o.el.classList.toggle('top', step >= 2 && o.el.classList.contains('top-c')); });
-      $('#rkNote').innerHTML = notes[Math.min(step, 3)];
+    SH.preguntas = function (sc, step) {
+      var k = 0;
+      items.forEach(function (el) {
+        var on = +el.dataset.w <= step;
+        if (on && !el.classList.contains('in')) el.style.setProperty('--d', (k++ * .18) + 's');
+        el.classList.toggle('in', on);
+      });
     };
+    SH.preguntas.reset = function () { cloud.classList.remove('focus'); items.forEach(function (o) { o.classList.remove('f', 'in'); }); };
   })();
 
-  /* ---------------- 19 limitaciones ---------------- */
+  /* ---------------- 14 limitaciones ---------------- */
   (function () {
     var mod = (D.classes || []).filter(function (c) { return c.key === 'mod'; })[0];
     if (mod) set('lmMod', mod.subjects);
@@ -380,7 +440,7 @@
     if (D.images_per_subject_median) set('lmIpp', fmt(D.images_per_subject_median));
   })();
 
-  /* ---------------- 21 fin: helix ---------------- */
+  /* ---------------- 16 fin: helix ---------------- */
   TICK.fin = function (t) {
     var A = '', B = '', x;
     for (x = 0; x <= 1200; x += 10) {
@@ -459,7 +519,7 @@
     else if (e.key === 'f') toggleFs();
   });
   document.addEventListener('click', function (e) {
-    if (e.target.closest('button')) return;
+    if (e.target.closest('button, .noadv')) return;
     if (e.clientX < window.innerWidth * .28) prev(); else next();
   });
   var tx = null;
@@ -490,5 +550,6 @@
     if (n >= 0 && n < scenes.length && n !== cur) go(n, false);
   });
   /* go to slide n (1-based) at its last step, e.g. DECK.show(7) from the console */
-  window.DECK = { next: next, prev: prev, show: function (n) { go(n - 1, true); } };
+  window.DECK = { next: next, prev: prev, show: function (n) { go(n - 1, true); },
+    setStep: function (n) { step = Math.max(0, Math.min(maxStep(scenes[cur]), n)); render(); } };
 })();

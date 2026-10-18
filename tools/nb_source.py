@@ -943,6 +943,16 @@ edge = truth_sl & ~ndi.binary_erosion(truth_sl, iterations=2)
 outline = np.zeros(edge.shape + (4,), np.uint8)
 outline[edge] = [0, 112, 111, 255]
 Image.fromarray(outline).save(ASSET_DIR / 'skull_truth.png')
+
+# Layers for the slide animation: the head splits into the selected brain and the removed skull
+head8, m = to8(sl), steps['mask']
+def rgba(gray, alpha):
+    return Image.fromarray(np.dstack([gray, gray, gray, alpha.astype(np.uint8)]))
+rgba(head8, m * 255).save(ASSET_DIR / 'skull_layer_brain.png')
+rgba(head8, (~m & (head8 > 8)) * 255).save(ASSET_DIR / 'skull_layer_skull.png')
+sel = np.zeros(m.shape + (4,), np.uint8)
+sel[m] = [0, 112, 111, 150]
+Image.fromarray(sel).save(ASSET_DIR / 'skull_layer_select.png')
 STATS['skull'] = {'dice_2d': round(dice(steps['mask'], truth_sl), 3), 'dice_3d': round(dice(mask3, truth), 3),
                   'slices_ok_pct': round(float(100 * np.mean(np.array(per_slice) > 0.9)), 1),
                   'removed_pct': round(float(100 * (1 - truth.sum() / (gfc > threshold_otsu(gfc[gfc > 0])).sum())), 1)}
@@ -964,6 +974,10 @@ rgb = np.zeros(seg_sl.shape + (3,), np.uint8)
 for k, c in tissue_cols.items():
     rgb[seg_sl == k] = [int(c[i:i + 2], 16) for i in (1, 3, 5)]
 Image.fromarray(rgb).save(ASSET_DIR / 'seg_labels.png')
+for k, name in [(1, 'csf'), (2, 'gm'), (3, 'wm')]:          # one transparent layer per tissue
+    layer = np.zeros(seg_sl.shape + (4,), np.uint8)
+    layer[seg_sl == k] = [int(tissue_cols[k][i:i + 2], 16) for i in (1, 3, 5)] + [235]
+    Image.fromarray(layer).save(ASSET_DIR / f'seg_{name}.png')
 save_asset(to8(brain_sl), 'seg_brain.png')
 
 vols_ml = {name: round(float((fseg == k).sum()) / 1000, 1) for k, name in [(1, 'csf'), (2, 'gm'), (3, 'wm')]}
@@ -978,18 +992,16 @@ STATS['seg'] = vols_ml
 # ## 19. Techniques 4–5 — Shannon entropy and slice ranking
 #
 # A CNN trained on 2D slices should see *informative* slices. **Shannon entropy** of a slice's intensity histogram,
-# `H = −Σ p(i) · log2 p(i)`, is low for slices that are mostly background or uniform, and high for slices with
-# a lot of texture and structure.
+# `H = −Σ p(i) · log2 p(i)`, measures how varied the gray levels of the whole slice are: a slice that is mostly black
+# background has almost one gray level (H ≈ 0), a slice full of brain has many (H high).
 #
 # **Slice ranking** combines several quality signals per slice into one score and keeps the top-k:
 # entropy (information), tissue area (how much brain), and sharpness (variance of the Laplacian, penalises blur).
 
 # %%
 def entropy(a, bins=64):
-    v = a[a > 0]
-    if v.size == 0:
-        return 0.0
-    p, _ = np.histogram(v, bins=bins, range=(0, 255))
+    """Shannon entropy (bits) of the gray-level histogram of the whole slice, background included."""
+    p, _ = np.histogram(a, bins=bins, range=(0, 255))
     p = p[p > 0] / p.sum()
     return float(-(p * np.log2(p)).sum())
 
@@ -1008,8 +1020,8 @@ savefig('19_entropy_along_head')
 ex_slices = {'low': int(np.argmax(np.array(area_z) > 0.02)) + 4, 'mid': 95, 'high': int(np.argmax(ent_z))}
 hists = {}
 for k, zz in ex_slices.items():
-    a = to_u8(masked[:, :, zz]); v = a[a > 0]
-    h, _ = np.histogram(v, bins=32, range=(0, 255))
+    a = to_u8(masked[:, :, zz])
+    h, _ = np.histogram(a[a > 0], bins=32, range=(0, 255))
     hists[k] = {'z': zz, 'hist': (h / h.sum()).round(4).tolist(), 'entropy': round(entropy(a), 2)}
     save_asset(np.rot90(a).astype(np.uint8), f'entropy_{k}.png')
 lo, hi = nonempty(masked, 2)
