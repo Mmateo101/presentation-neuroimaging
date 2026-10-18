@@ -69,6 +69,74 @@
 #motiv .acc small{display:block;font:500 30px var(--body);color:var(--dim);margin-top:14px}
 #motiv .banner{position:absolute;left:128px;right:128px;top:880px;background:var(--lav);color:#fff;border-radius:20px;padding:26px 36px;font:800 44px var(--display);text-align:center}
 
+/* ---------- demencia ---------- */
+#demencia .def{position:absolute;left:128px;top:270px;width:800px}
+#demencia .lead2{font-size:25px;line-height:1.4;color:var(--mute);margin:0 0 20px}
+#demencia .lead2 b{color:var(--ink)}
+#demencia .types{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+#demencia .ty{background:#fff;border:2px solid var(--line);border-radius:18px;padding:14px 20px}
+#demencia .ty.main{background:var(--soft-teal);border-color:var(--soft-teal)}
+#demencia .ty b{display:block;font:800 30px var(--display);color:var(--ink)}
+#demencia .ty.main b{color:var(--teal)}
+#demencia .ty span{display:block;font-size:20px;line-height:1.35;color:var(--mute)}
+#demencia .mci{font-size:22px;line-height:1.4;color:var(--mute);margin:18px 0 0}
+#demencia .mci b{color:var(--indigo)}
+#demencia .cdr{position:absolute;left:1040px;top:270px;width:752px}
+#demencia .cimg{width:680px;height:340px;margin:0 auto;border-radius:18px;overflow:hidden;background:#000}
+#demencia .cimg img{width:100%;height:100%;display:block;transition:opacity .35s}
+#demencia .ctrack{position:relative;height:90px;margin:18px 30px 0}
+#demencia .ctrack::before{content:"";position:absolute;left:0;right:0;top:24px;height:8px;border-radius:4px;background:linear-gradient(90deg,#00706F,#7D7ECA,#3D358B,#1F1F1F,#B3263A)}
+#demencia .stop{position:absolute;top:0;width:110px;margin-left:-55px;text-align:center;background:none;border:0;cursor:pointer;padding:0;font:inherit}
+#demencia .stop i{display:block;width:44px;height:44px;margin:6px auto 0;border-radius:50%;background:var(--paper);border:6px solid var(--line);box-sizing:border-box;transition:transform .4s,border-color .4s}
+#demencia .stop span{display:block;margin-top:8px;font:700 24px var(--mono);color:var(--mute)}
+#demencia .stop.on i{transform:scale(1.3);border-color:var(--ink)}
+#demencia .stop.on span{color:var(--ink)}
+#demencia .stop.na span{color:#B9BFC7}
+#demencia .cinfo b{display:block;font:800 36px var(--display)}
+#demencia .cinfo span{display:block;font:500 22px var(--mono);color:var(--teal);margin-top:6px}
+#demencia .cinfo p{font-size:22px;line-height:1.4;color:var(--mute);margin:8px 0 0}
+#demencia .gloss{position:absolute;left:128px;right:128px;top:950px;display:flex;gap:40px;font-size:22px;color:var(--mute)}
+#demencia .gloss b{font-family:var(--mono);color:var(--ink);margin-right:8px}
+
+/* ---------- metodología ---------- */
+#metodo .flow{position:absolute;left:128px;right:128px;top:270px;display:flex;align-items:center;gap:14px}
+#metodo .nd3{flex:1;display:flex;align-items:center;gap:16px;background:#2A2D33;border:2px solid #3A3F47;border-radius:20px;padding:18px 22px;color:var(--dim);cursor:pointer;text-align:left;transition:background .4s,border-color .4s,color .4s}
+#metodo .nd3 i{flex:none;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font:700 26px var(--mono);font-style:normal;background:#3A3F47;color:#fff;transition:background .4s}
+#metodo .nd3 span{font:600 25px/1.2 var(--body)}
+#metodo .nd3.on{background:var(--indigo);border-color:var(--lav);color:#fff}
+#metodo .nd3.on i{background:var(--lav)}
+#metodo .nd3.done{color:#fff}
+#metodo .nd3.done i{background:var(--teal)}
+#metodo .nd3:focus-visible{outline:3px solid var(--sky);outline-offset:3px}
+#metodo .ar{flex:none;width:30px;height:4px;background:#3A3F47;position:relative}
+#metodo .ar::after{content:"";position:absolute;right:-2px;top:-6px;border:8px solid transparent;border-left-color:#3A3F47}
+#metodo .mp{position:absolute;left:128px;right:128px;top:420px;bottom:120px;display:flex;flex-wrap:wrap;gap:40px 60px;align-content:flex-start;opacity:0;transform:translateY(24px);pointer-events:none;transition:opacity .6s,transform .7s cubic-bezier(.2,.8,.2,1)}
+#metodo .mp.on{opacity:1;transform:none;pointer-events:auto}
+#metodo .col{flex:1;min-width:600px}
+#metodo h4{font:600 24px var(--mono);letter-spacing:3px;text-transform:uppercase;color:var(--sky);margin:0 0 16px}
+#metodo p{font-size:29px;line-height:1.45;color:var(--dim);margin:0 0 12px}
+#metodo p b{color:#fff}
+#metodo code{display:inline-block;margin-top:10px;font:500 25px var(--mono);color:#F2B84B;background:#14161A;border-radius:12px;padding:14px 20px}
+#metodo .chips{display:flex;flex-wrap:wrap;gap:14px}
+#metodo .chips span{font:600 28px var(--body);color:#fff;background:#2A2D33;border:2px solid var(--lav);border-radius:999px;padding:12px 26px}
+#metodo .note{flex-basis:100%;font-size:24px;color:var(--dim);margin:0}
+#metodo .note.top{font-size:28px}
+#metodo .models{flex-basis:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:30px}
+#metodo .mdl{background:#2A2D33;border-radius:20px;padding:26px 28px}
+#metodo .mdl h5{font:800 40px var(--display);color:#fff;margin:0 0 6px}
+#metodo .mdl small{font:500 20px var(--mono);color:var(--dim)}
+#metodo .mdl .acc{font:700 64px/1 var(--mono);color:#F2B84B;margin-top:18px}
+#metodo .mdl .bar{position:relative;height:16px;border-radius:8px;background:#14161A;margin-top:14px}
+#metodo .mdl .bar i{position:absolute;left:0;top:0;bottom:0;width:100%;border-radius:8px;background:#F2B84B;transform-origin:left;transform:scaleX(0);transition:transform 1.4s cubic-bezier(.2,.8,.2,1)}
+#metodo .mdl .bar em{position:absolute;top:-8px;bottom:-8px;width:3px;background:#fff;left:33.3%}
+#metodo .mp.on .mdl .bar i{transform:scaleX(var(--a))}
+#metodo .cm{display:grid;grid-template-columns:80px repeat(3,140px);grid-template-rows:auto 40px repeat(3,88px);gap:8px;align-self:flex-start}
+#metodo .cm span{display:grid;place-items:center;font:600 22px var(--mono);color:var(--dim)}
+#metodo .cm i{display:grid;place-items:center;border-radius:12px;font:700 30px var(--mono);font-style:normal;color:#fff;opacity:0;transform:scale(.6);transition:opacity .5s,transform .6s cubic-bezier(.2,.8,.2,1);transition-delay:var(--d)}
+#metodo .mp.on .cm i{opacity:1;transform:none}
+#metodo .cm .ttl2{grid-column:2/5;font:500 20px/1.3 var(--mono);color:var(--dim);place-items:start}
+#metodo .warn2{margin-top:24px!important;padding:18px 22px;border-radius:14px;background:#B3263A33;color:#fff!important;font-size:26px!important}
+
 /* ---------- oasis ---------- */
 #oasis .t{position:absolute;left:128px;top:110px;width:760px}
 #oasis .t .ttl{font-size:120px}

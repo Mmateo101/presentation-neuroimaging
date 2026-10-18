@@ -108,6 +108,64 @@
     };
   })();
 
+  /* ---------------- 06 demencia: types + CDR scale with real scans ---------------- */
+  (function () {
+    var stops = [
+      ['0', 'Normal', 'OASIS: Non Demented · ADNI: CN', 'Sin problemas de memoria ni en la vida diaria.', 'nd'],
+      ['0.5', 'Muy leve', 'OASIS: Very mild Dementia · ADNI: MCI (aprox.)', 'Olvidos leves pero constantes; la persona sigue siendo independiente.', 'vmd'],
+      ['1', 'Leve', 'OASIS: Mild Dementia · ADNI: AD', 'La pérdida de memoria ya afecta las actividades del día a día.', 'md'],
+      ['2', 'Moderada', 'OASIS: Moderate Dementia · ADNI: AD', 'Necesita ayuda para cuidarse. En OASIS-1 solo hay 2 personas así.', 'mod'],
+      ['3', 'Severa', 'No aparece en OASIS-1', 'Dependencia total; no hay resonancias de esta etapa en el dataset.', null]];
+    var tr = $('#cdrTrack'), img = $('#cdrImg'), btns = [];
+    stops.forEach(function (s, i) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'stop' + (s[4] ? '' : ' na');
+      b.style.left = (i / (stops.length - 1) * 100) + '%';
+      b.innerHTML = '<i></i><span>' + s[0] + '</span>';
+      b.addEventListener('click', function () { if (window.DECK) DECK.setStep(i + 1); });
+      tr.appendChild(b); btns.push(b);
+    });
+    SH.demencia = function (sc, step) {
+      var k = Math.max(0, Math.min(4, step - 1)), s = stops[k];
+      btns.forEach(function (b, i) { b.classList.toggle('on', i === k); });
+      set('cdrName', 'CDR ' + s[0] + ' · ' + s[1]); set('cdrMap', s[2]); set('cdrTxt', s[3]);
+      img.style.opacity = s[4] ? 1 : .12;
+      if (s[4]) img.src = G + 'class_' + s[4] + '.jpg';
+    };
+  })();
+
+  /* ---------------- 07 metodología: four stages, last semester's models and metrics ---------------- */
+  (function () {
+    /* confusion matrices shown in last semester's GRES slides (rows = real CN/MCI/AD, columns = predicted) */
+    var M = {
+      'CNN': [[14, 31, 5], [27, 45, 15], [9, 20, 16]],
+      'ResNet50': [[78, 141, 21], [69, 253, 27], [44, 117, 24]],
+      'MobileNetV2': [[18, 40, 2], [16, 68, 3], [8, 33, 4]]};
+    function acc(m) { var n = 0, d = 0; m.forEach(function (r, i) { r.forEach(function (v) { n += v; }); d += r[i]; }); return d / n; }
+    set('mtN', fmt(D.n_images || 86437));
+    $('#mtModels').innerHTML = Object.keys(M).map(function (k) {
+      var a = acc(M[k]), n = M[k].reduce(function (s, r) { return s + r[0] + r[1] + r[2]; }, 0);
+      return '<div class="mdl"><h5>' + k + '</h5><small>' + fmt(n) + ' imágenes de prueba</small><div class="acc">' + a.toFixed(2) + '</div><div class="bar" title="línea blanca = azar (0.33)"><i style="--a:' + a.toFixed(3) + '"></i><em></em></div></div>';
+    }).join('');
+    var R = M.ResNet50, lab = ['CN', 'MCI', 'AD'], mx = 253, h = '<span></span><span class="ttl2">predicho →</span>';
+    h = '<span></span>' + lab.map(function (l) { return '<span>' + l + '</span>'; }).join('');
+    R.forEach(function (r, i) {
+      h += '<span>' + lab[i] + '</span>';
+      r.forEach(function (v, j) {
+        h += '<i style="--d:' + ((i * 3 + j) * 90) + 'ms;background:rgba(125,126,202,' + (.15 + .85 * v / mx).toFixed(2) + ')' + (i === j ? ';outline:3px solid #F2B84B;outline-offset:-3px' : '') + '">' + v + '</i>';
+      });
+    });
+    $('#mtCm').innerHTML = '<span></span><span class="ttl2" style="grid-column:2/5">ResNet50 · columnas = predicho, filas = real</span>' + h;
+    var predMCI = R.reduce(function (s, r) { return s + r[1]; }, 0) / R.reduce(function (s, r) { return s + r[0] + r[1] + r[2]; }, 0);
+    $('#mtWarn').innerHTML = 'Predijo <b>MCI</b> en el ' + Math.round(predMCI * 100) + '% de las imágenes y reconoció solo el ' + Math.round(R[2][2] / (R[2][0] + R[2][1] + R[2][2]) * 100) + '% de los casos de Alzheimer. La accuracy sola no lo muestra.';
+    var nodes = $$('#metodo .nd3'), panes = $$('#metodo .mp');
+    nodes.forEach(function (b) { b.addEventListener('click', function () { if (window.DECK) DECK.setStep(+b.dataset.i); }); });
+    SH.metodo = function (sc, step) {
+      nodes.forEach(function (b, i) { b.classList.toggle('on', i === step); b.classList.toggle('done', i < step); });
+      panes.forEach(function (p, i) { p.classList.toggle('on', i === step); });
+    };
+  })();
+
   /* ---------------- 06 oasis: three planes + Kaggle numbers ---------------- */
   set('oaImg', fmt(D.n_images || 86437));
   set('oaSub', fmt(D.n_subjects || 347));
