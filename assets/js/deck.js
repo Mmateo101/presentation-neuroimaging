@@ -373,7 +373,7 @@
       $('#clNote').textContent = step >= 1 ? md[2] : '';
       rows.forEach(function (r) {
         var w = step >= 1 ? val(r.c) / max * 82 : 0;
-        r.fill.style.width = w + '%';
+        r.fill.style.transform = 'scaleX(' + (w / 100).toFixed(3) + ')';
         r.val.style.left = w + '%';
         r.val.textContent = step >= 1 ? fmt(val(r.c)) : '';
       });

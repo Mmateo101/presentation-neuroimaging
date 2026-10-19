@@ -180,7 +180,7 @@
 #corte .fn span{padding:2px 4px;border-radius:8px}
 #corte .fn .c{color:#fff}
 #corte .fdesc{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:18px}
-#corte .fdesc div{border-top:6px solid;padding-top:8px;font-size:21px;line-height:1.25;color:var(--mute)}
+#corte .fdesc div{box-shadow:inset 0 6px 0 var(--c);padding-top:14px;font-size:21px;line-height:1.25;color:var(--mute)}
 #corte .fdesc b{display:block;font:700 23px var(--mono);color:var(--ink);margin-bottom:2px}
 #corte .warn{position:absolute;left:128px;top:740px;width:640px;font-size:26px;line-height:1.4;color:var(--ink);margin:0}
 
@@ -190,7 +190,7 @@
 #clases .row .nm{font:600 30px var(--body);line-height:1.15}
 #clases .row .nm small{display:block;font:500 22px var(--mono);color:var(--mute)}
 #clases .track{position:relative;height:84px}
-#clases .fill{position:absolute;left:0;top:0;bottom:0;border-radius:12px;width:0;transition:width 1.4s cubic-bezier(.2,.8,.2,1)}
+#clases .fill{position:absolute;left:0;top:0;bottom:0;width:100%;border-radius:12px;transform-origin:left;transform:scaleX(0);transition:transform 1.4s cubic-bezier(.2,.8,.2,1)}
 #clases .val{position:absolute;top:50%;transform:translateY(-50%);font:700 38px var(--mono);white-space:nowrap;transition:left 1.4s cubic-bezier(.2,.8,.2,1);padding-left:18px}
 #clases .mode{position:absolute;left:128px;top:270px;font:600 28px var(--mono);color:var(--mute)}
 #clases .mode b{color:var(--teal)}
