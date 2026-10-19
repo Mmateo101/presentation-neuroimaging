@@ -228,37 +228,6 @@
 #personas .note b{color:var(--ink);font-family:var(--mono)}
 
 
-/* ---------- fuga ---------- */
-#fuga .corr{position:absolute;left:128px;top:300px;width:600px}
-#fuga .corr div{margin-bottom:34px}
-#fuga .corr b{font:700 110px/1 var(--mono)}
-#fuga .corr span{display:block;font-size:28px;color:var(--mute);margin-top:6px}
-#fuga .pairs{display:flex;gap:10px;margin-top:10px}
-#fuga .pairs .sprite{width:240px;height:120px;border-radius:10px}
-#fuga .split{position:absolute;left:820px;top:280px;width:980px;height:620px}
-#fuga .side2{position:absolute;top:0;width:440px;height:520px;border-radius:22px;border:3px dashed var(--line)}
-#fuga .side2.tr{left:0}#fuga .side2.te{left:540px}
-#fuga .side2 h4{position:absolute;left:0;right:0;top:-46px;text-align:center;margin:0;font:600 26px var(--mono);letter-spacing:2px;color:var(--mute);text-transform:uppercase}
-#fuga .dot{position:absolute;width:34px;height:34px;border-radius:8px;transition:left 1.2s cubic-bezier(.6,0,.2,1),top 1.2s cubic-bezier(.6,0,.2,1),box-shadow .4s}
-#fuga .dot.leak{box-shadow:0 0 0 5px #B3263A}
-#fuga .verdict{position:absolute;left:0;right:0;top:560px;text-align:center;font-size:30px;color:var(--ink)}
-#fuga .verdict b{font-family:var(--mono)}
-
-/* ---------- cuántos datos sirven ---------- */
-#cuantos .cnt{position:absolute;left:128px;top:320px;width:700px}
-#cuantos .cnt b{display:block;font:700 150px/1 var(--mono);color:var(--teal);transition:color .5s}
-#cuantos .cnt span{display:block;font:700 46px var(--display);margin-top:8px}
-#cuantos .cnt p{font-size:31px;line-height:1.4;color:var(--mute);margin:30px 0 0;max-width:660px}
-#cuantos .cnt p b{display:inline;font:600 31px var(--body);color:var(--ink)}
-#cuantos .dots{position:absolute;left:900px;top:300px;width:892px;display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start}
-#cuantos .dots i{width:26px;height:26px;border-radius:50%;opacity:0;transform:scale(0);transition:opacity .5s,transform .6s cubic-bezier(.2,.8,.2,1),filter .5s;transition-delay:var(--d)}
-#cuantos.st1 .dots i{opacity:1;transform:none}
-#cuantos.st2 .dots i.un,#cuantos.st3 .dots i.mod{opacity:.12;transform:scale(.55);filter:grayscale(1);transition-delay:0s}
-#cuantos .final{position:absolute;left:900px;right:128px;top:860px;display:flex;gap:28px;opacity:0;transform:translateY(20px);transition:opacity .7s,transform .7s}
-#cuantos.st4 .final{opacity:1;transform:none}
-#cuantos .final div{font:600 26px var(--body);display:flex;align-items:center;gap:12px}
-#cuantos .final b{font:700 44px var(--mono)}
-
 /* ---------- técnicas: un solo slide ---------- */
 #tec .tabs{position:absolute;left:128px;right:128px;top:252px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 #tec .tg{font:500 20px var(--mono);letter-spacing:3px;text-transform:uppercase;color:var(--dim);margin:0 6px 0 18px}
