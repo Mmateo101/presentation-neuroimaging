@@ -524,6 +524,27 @@ for c, v in scan_by_class.items():
     STATS['scan_sprites'][CLASS_KEY[c]] = meta
 print('Scan sprites:', {k: v['volume'] for k, v in STATS['scan_sprites'].items()})
 
+# One slice per class at the same brain level (lateral ventricles), for the dementia slide.
+# Reference = the widest slice of the Non Demented example scan; for each class we pick, among up to
+# 6 complete scans, the slice whose centre looks most like the reference (correlation on a central crop).
+zs_ = lambda a: (a - a.mean()) / (a.std() + 1e-6)
+crop_ = lambda p: np.asarray(Image.open(p).convert('L').resize((124, 62)), np.float32)[12:50, 30:94]
+ref_scan = scan_paths(example_vol)
+ref_path = ref_scan.path.iloc[int(np.argmax([(load(p) > 15).mean() for p in ref_scan.path]))]
+refz = zs_(crop_(ref_path))
+STATS['dementia_imgs'] = {}
+for c in ORDER:
+    best = (-9.0, None)
+    for v in [v for v in complete if vol_label[v] == c][:6]:
+        for _, r in scan_paths(v).iterrows():
+            sc_ = float((zs_(crop_(r.path)) * refz).mean())
+            if sc_ > best[0]:
+                best = (sc_, r)
+    if best[1] is not None:
+        save_asset(load(best[1].path).astype(np.uint8), f'dementia_{CLASS_KEY[c]}.jpg')
+        STATS['dementia_imgs'][CLASS_KEY[c]] = {'volume': best[1].volume, 'slice': int(best[1].slice)}
+print('Same-level slices:', STATS['dementia_imgs'])
+
 # %% [markdown]
 # **11.3 Same slice position across classes** — exported as one image per class for the slides.
 

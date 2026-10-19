@@ -36,11 +36,11 @@
 <section class="scene light" id="intro" data-tr="circle">
   <div class="hd"><p class="eyebrow">Antes de empezar</p><h2 class="ttl">Ronda de <em>presentaciones</em></h2></div>
   <div class="prompts">
-    <div class="pr" data-s="1"><b>01</b><span>Tu nombre</span><i>y cómo te gusta que te digan</i></div>
+    <div class="pr" data-s="1"><b>01</b><span>Tu nombre</span></div>
     <div class="pr" data-s="2"><b>02</b><span>Carrera y semestre</span></div>
-    <div class="pr" data-s="3"><b>03</b><span>¿Por qué neuroimagen?</span><i>qué te llamó la atención del proyecto</i></div>
-    <div class="pr" data-s="4"><b>04</b><span>Qué quieres aprender</span><i>Python, deep learning, MRI, investigación…</i></div>
-    <div class="pr" data-s="5"><b>05</b><span>Hobbies</span><i>qué haces cuando no estás programando</i></div>
+    <div class="pr" data-s="3"><b>03</b><span>¿Por qué neuroimagen?</span></div>
+    <div class="pr" data-s="4"><b>04</b><span>Qué quieres aprender</span></div>
+    <div class="pr" data-s="5"><b>05</b><span>Hobbies</span></div>
   </div>
 </section>
 
@@ -49,7 +49,7 @@
   <div class="gt">
     <p class="eyebrow">El grupo</p>
     <h2 class="ttl">¿Qué es GenoBit?</h2>
-    <p class="lead" data-s="1"><b style="color:var(--teal)">Geno</b> de genómica y <b style="color:var(--indigo)">Bit</b> de computación: el primer grupo estudiantil dedicado a bioinformática en el Tec.</p>
+    <p class="lead" data-s="1"><b style="color:var(--teal)">Geno</b> de genómica + <b style="color:var(--indigo)">Bit</b> de computación.</p>
   </div>
   <svg class="logo" viewBox="0 0 700 580" aria-label="Logo de GenoBit: doble hélice con pines de circuito">
     <g id="lgHelix"></g>
@@ -61,9 +61,9 @@
     </svg>
   <img class="lg-img" src="assets/img/genobit_wordmark.png" alt="GenoBit">
   <div class="ach">
-    <div class="card" data-s="2"><b>01</b><h3>Identidad de marca</h3><p>Construida desde la bioinformática: la hélice con pines une biología molecular y computación.</p></div>
-    <div class="card" data-s="3"><b>02</b><h3>Comunidad fundada</h3><p>El primer grupo estudiantil de bioinformática del Tec.</p></div>
-    <div class="card" data-s="4"><b>03</b><h3>Plan de trabajo</h3><p>Talleres y proyectos con una ruta clara para los siguientes ciclos.</p></div>
+    <div class="card" data-s="2"><b>01</b><h3>Identidad de marca</h3></div>
+    <div class="card" data-s="3"><b>02</b><h3>Comunidad fundada</h3></div>
+    <div class="card" data-s="4"><b>03</b><h3>Plan de trabajo</h3></div>
   </div>
 </section>
 
@@ -74,11 +74,11 @@
     <h2 class="ttl">Nuestros proyectos</h2>
   </div>
   <div class="focus">
-    <div class="fx f1"><span class="k">Proyecto</span><h3 style="color:var(--teal)">Neuroimaging</h3><p>Limpiar y estandarizar resonancias de cerebro para detectar demencia.</p></div>
-    <div class="fx f2"><span class="k">Proyecto</span><h3>Biomarkers</h3><p>Señales de Alzheimer en sangre y líquido cefalorraquídeo (modelo A-T-N).</p></div>
-    <div class="fx f3"><span class="k">Proyecto</span><h3>AlphaBit</h3><p>App educativa que explica el plegamiento de proteínas con la API de AlphaFold2.</p></div>
-    <div class="fx f4"><span class="k">Proyecto</span><h3>miRNAseq pipeline</h3><p>De lecturas crudas de secuenciación al análisis de microRNAs.</p></div>
-    <div class="fx f5"><span class="k">Hoy</span><h3 style="color:var(--teal)">Neuroimaging</h3><p>Lo relanzamos este semestre, con ustedes.</p></div>
+    <div class="fx f1"><span class="k">Proyecto</span><h3 style="color:var(--teal)">Neuroimaging</h3></div>
+    <div class="fx f2"><span class="k">Proyecto</span><h3>Biomarkers</h3></div>
+    <div class="fx f3"><span class="k">Proyecto</span><h3>AlphaBit</h3></div>
+    <div class="fx f4"><span class="k">Proyecto</span><h3>miRNAseq pipeline</h3></div>
+    <div class="fx f5"><span class="k">Hoy</span><h3 style="color:var(--teal)">Neuroimaging</h3></div>
   </div>
   <div id="orbit">
     <svg class="rg" viewBox="0 0 960 860"><ellipse class="ring" cx="480" cy="430" rx="400" ry="290"/></svg>
@@ -95,10 +95,10 @@
 <section class="scene dark" id="mri" data-tr="zoom">
   <div class="hd"><p class="eyebrow">Antes de los datos</p><h2 class="ttl">Imágenes del <em>cerebro</em></h2></div>
   <div class="mtx">
-    <p class="ms" data-k="0">Una resonancia no es una foto: es un <b>volumen en 3D</b> de la cabeza. El escáner lo recorre <b>corte por corte</b>.</p>
-    <p class="ms" data-k="1">Apilados, los cortes forman el volumen. Cada cubito de ese volumen es un <b>vóxel</b>: un pixel en 3D.</p>
-    <p class="ms" data-k="2">Cada corte es una imagen en <b>escala de grises</b>: cada pixel es un número, de <b>0 (negro)</b> a <b>255 (blanco)</b>.</p>
-    <p class="ms" data-k="3"><b>En nuestro dataset</b>, cada archivo es uno de esos cortes, ya guardado como imagen.</p>
+    <p class="ms" data-k="0">Una resonancia es un <b>volumen 3D</b>, tomado <b>corte por corte</b>.</p>
+    <p class="ms" data-k="1">Cada cubito del volumen es un <b>vóxel</b>.</p>
+    <p class="ms" data-k="2">Cada pixel es un número: <b>0 negro</b>, <b>255 blanco</b>.</p>
+    <p class="ms" data-k="3"><b>En el dataset:</b> 1 archivo = 1 corte.</p>
   </div>
   <svg class="head" viewBox="0 0 360 460" aria-label="Cabeza de perfil dentro del escáner">
     <path class="hd-s" d="M120 40c80-30 170 0 195 80 14 44 4 80 14 110l26 44c6 12-4 20-14 22l-12 2 6 30c3 16-8 26-24 28l-34 4c-10 2-14 10-12 22l6 48H120l-8-70C60 330 30 270 34 190 38 110 70 58 120 40z"/>
@@ -110,12 +110,12 @@
     <div class="pimg"><img src="assets/generated/class_nd.jpg" alt="Un corte del dataset"><i id="pxBox"></i></div>
     <div class="grid8" id="pxGrid"></div>
     <div class="gbar"><span>0</span><i></i><span>255</span></div>
-    <p class="gtis">líquido · oscuro &nbsp;&nbsp; materia gris · gris &nbsp;&nbsp; materia blanca · claro</p>
+    
   </div>
   <div class="dsf" data-s="3">
-    <div><b>1 archivo = 1 corte</b><span>axial, visto desde arriba</span></div>
+    <div><b>Axial</b><span>visto desde arriba</span></div>
     <div><b id="mriWH">496 × 248</b><span>pixeles</span></div>
-    <div><b>Gris</b><span>guardado en RGB, pero los 3 canales son idénticos</span></div>
+    <div><b>Gris</b><span>3 canales iguales</span></div>
     <div><b id="mriN">61</b><span>cortes por escaneo</span></div>
   </div>
   <i data-s="1" hidden></i><i data-s="2" hidden></i>
@@ -123,21 +123,10 @@
 
 <!-- 06 DEMENCIA -->
 <section class="scene light" id="demencia" data-tr="door">
-  <div class="hd"><p class="eyebrow">Contexto</p><h2 class="ttl">¿Qué es la <em>demencia</em>?</h2>
-    <p class="lead" style="font-size:30px;margin-top:14px">Cuando la pérdida de memoria y razonamiento ya afecta la vida diaria. La causa más común es el Alzheimer.</p></div>
-  <svg class="brainx" id="dmBrain" viewBox="-220 -230 440 460" aria-label="Ilustración de un cerebro que se encoge con la demencia">
-    <ellipse class="skull" cx="0" cy="0" rx="190" ry="214"/>
-    <g id="dmB"><path class="ctx" id="dmCtx"/><g id="dmSul"></g><path class="mid" d="M0 -185V185"/><g id="dmVen"><path class="ven" d="M-8 -60c-40 -6-62 20-58 58 4 30 22 44 30 74 4 14 18 14 22 0 6-26-6-60 6-132z"/><path class="ven" d="M8 -60c40 -6 62 20 58 58-4 30-22 44-30 74-4 14-18 14-22 0-6-26 6-60-6-132z"/></g></g>
-  </svg>
-  <div class="dmr">
-    <b class="lvl" id="dmLvl">Sano</b>
-    <span class="cdrl" id="dmCdr">CDR 0 · en el dataset: Non Demented</span>
-    <p class="dsc" id="dmDsc"></p>
-    <div class="mt"><span>Volumen del cerebro</span><div class="bar"><i id="dmVol"></i></div><b id="dmVolN">75%</b></div>
-    <div class="mt"><span>MMSE · memoria y razonamiento</span><div class="bar"><i id="dmMm"></i></div><b id="dmMmN">29 / 30</b></div>
-    <div class="sld noadv" id="dmSld"><div class="rail"></div><div class="knob" id="dmKnob"></div></div>
-    <p class="src2">Ilustración. Los valores son promedios reales de OASIS-1 (personas de 60 años o más).</p>
-  </div>
+  <div class="hd"><p class="eyebrow">Contexto</p><h2 class="ttl">¿Qué es la <em>demencia</em>?</h2></div>
+  <div class="big2"><img id="dmImg" src="assets/generated/dementia_nd.jpg" alt="Resonancia al nivel de los ventrículos"><b id="dmLbl">Sano</b></div>
+  <div class="thumbs noadv" id="dmThumbs"></div>
+  <p class="dmnote">Mismo nivel del cerebro, distintas personas. Los huecos oscuros crecen.</p>
   <i data-s="1" hidden></i><i data-s="2" hidden></i><i data-s="3" hidden></i>
 </section>
 
@@ -155,25 +144,25 @@
   </nav>
 
   <div class="mp" data-p="0">
-    <div class="col"><h3>Semestre pasado</h3><p><b>ADNI</b>: resonancias con 3 clases, CN / MCI / AD. Acceso restringido.</p></div>
-    <div class="col"><h3>Este semestre</h3><p><b>OASIS-1 desde Kaggle</b>, abierto: <span id="mtN">86,437</span> JPG en 4 clases, descargado con una línea:</p>
+    <div class="col"><h3>Semestre pasado</h3><p><b>ADNI</b> · 3 clases · restringido</p></div>
+    <div class="col"><h3>Este semestre</h3><p><b>OASIS-1 · Kaggle</b> · <span id="mtN">86,437</span> JPG · abierto</p>
       <code>kagglehub.dataset_download("ninadaithal/imagesoasis")</code></div>
   </div>
 
   <div class="mp" data-p="1">
     <div class="col"><h3>Limpieza y estandarización</h3><div class="chips"><span>Skull stripping</span><span>Bias field correction</span><span>FreeSurfer</span></div></div>
     <div class="col"><h3>Selección de cortes</h3><div class="chips"><span>Entropía de Shannon</span><span>Slice ranking</span></div></div>
-    <p class="note">Se propusieron el semestre pasado, pero no hay código que muestre que se aplicaron antes de entrenar.</p>
+    
   </div>
 
   <div class="mp" data-p="2">
-    <p class="note top">Tres redes neuronales convolucionales (CNN), que aprenden directo de los pixeles de cada corte:</p>
+    
     <div class="models" id="mtModels"></div>
-    <p class="note">Accuracy calculada de las matrices de confusión que presentaron. Con 3 clases, adivinar al azar daría 0.33.</p>
+    <p class="note">Accuracy · azar = 0.33</p>
   </div>
 
   <div class="mp" data-p="3">
-    <div class="col"><h3>Lo que se usó</h3><p><b>Accuracy</b>: qué fracción de imágenes se clasificó bien.</p><p><b>Matriz de confusión</b>: para cada clase real, qué predijo el modelo.</p>
+    <div class="col"><h3>Lo que se usó</h3><p><b>Accuracy</b></p><p><b>Matriz de confusión</b></p>
       <p class="warn2" id="mtWarn"></p></div>
     <div class="cm" id="mtCm"></div>
   </div>
@@ -182,26 +171,26 @@
 
 <!-- 08 OASIS -->
 <section class="scene dark" id="oasis" data-tr="circle">
-  <div class="t"><p class="eyebrow">La base de datos</p><h2 class="ttl">OASIS</h2><p class="lead" style="font-size:30px">Open Access Series of Imaging Studies · Washington University in St. Louis. Resonancias de cerebro de acceso abierto.</p></div>
+  <div class="t"><p class="eyebrow">La base de datos</p><h2 class="ttl">OASIS</h2><p class="lead" style="font-size:30px">Open Access Series of Imaging Studies</p></div>
   <p class="gl o" data-s="1">OASIS-1 · transversal · la que usamos</p><p class="gl k">La familia OASIS</p>
   <div class="grid g1" data-s="1">
-    <div><b data-count="416">0</b><span>personas, una visita cada una</span></div>
-    <div><b>18–96</b><span>años de edad</span></div>
-    <div><b>3–4</b><span>resonancias T1 por sesión</span></div>
-    <div><b data-count="100">0</b><span>mayores de 60 con Alzheimer muy leve a moderado</span></div>
+    <div><b data-count="416">0</b><span>personas</span></div>
+    <div><b>18–96</b><span>años</span></div>
+    <div><b>3–4</b><span>resonancias T1</span></div>
+    <div><b data-count="100">0</b><span>con Alzheimer</span></div>
   </div>
   <div class="fam">
-    <div class="fr"><b>OASIS-1</b><span>Transversal</span><em>416 personas · 18–96 años · resonancia T1</em></div>
-    <div class="fr"><b>OASIS-2</b><span>Longitudinal</span><em>150 personas · 60–96 años · 373 sesiones T1, visitas separadas ≥ 1 año</em></div>
-    <div class="fr"><b>OASIS-3</b><span>Longitudinal multimodal</span><em>1,378 personas · 42–95 años · 2,842 sesiones de MR (T1, T2, FLAIR, DTI…) y PET</em></div>
-    <div class="fr"><b>OASIS-4</b><span>Cohorte clínica</span><em>663 personas · 21–94 años · datos clínicos, LCR, pruebas cognitivas e imagen</em></div>
+    <div class="fr"><b>OASIS-1</b><span>Transversal</span><em>416 personas · 18–96 años</em></div>
+    <div class="fr"><b>OASIS-2</b><span>Longitudinal</span><em>150 personas · 60–96 años</em></div>
+    <div class="fr"><b>OASIS-3</b><span>Longitudinal multimodal</span><em>1,378 personas · 42–95 años · + PET</em></div>
+    <div class="fr"><b>OASIS-4</b><span>Cohorte clínica</span><em>663 personas · 21–94 años</em></div>
   </div>
   <i data-s="2" hidden></i>
   <div class="view v-ax sprite" data-sprite="plane.axial"></div>
   <div class="view v-co sprite" data-sprite="plane.coronal"></div>
   <div class="view v-sa sprite" data-sprite="plane.sagittal"></div>
   <span class="vl" style="left:976px;top:160px">axial</span><span class="vl" style="left:1506px;top:160px">coronal</span><span class="vl" style="left:1506px;top:500px">sagital</span>
-  <p class="src">Una persona real de OASIS-1 (OAS1_0001) recorrida en los tres planos. Cifras: sites.wustl.edu/oasisbrains.</p>
+  
 </section>
 
 <!-- 09 ASÍ VIENE EL DATASET -->
@@ -218,7 +207,7 @@
       <div style="border-color:#C99A2E"><b id="dsSl">100</b>número de corte</div>
     </div>
   </div>
-  <p class="warn" data-s="2">La etiqueta solo vive en el <b>nombre de la carpeta</b>; persona, sesión, escaneo y corte, en el <b>nombre del archivo</b>. Todos los escaneos traen <b id="dsN">61</b> cortes, numerados <b id="dsRange">100–160</b>.</p>
+  <p class="warn" data-s="2">Etiqueta = <b>carpeta</b>. Lo demás = <b>nombre del archivo</b>.<br><b id="dsN">61</b> cortes por escaneo (<b id="dsRange">100–160</b>).</p>
 </section>
 
 
@@ -228,9 +217,9 @@
   <p class="mode" id="clMode">contando <b>imágenes</b></p>
   <div class="bars" id="clBars"></div>
   <div class="side">
-    <p class="cap" style="margin:0 0 16px">cada punto = 1 persona · grandes: demencia moderada</p>
+    <p class="cap" style="margin:0 0 16px">1 punto = 1 persona</p>
     <div class="people" id="clPeople"></div>
-    <div class="two"><b id="clTwo">2</b>personas en <i style="font-style:normal;color:var(--teal)">Moderate Dementia</i>. Si separamos por persona, el modelo entrena con una sola.</div>
+    <div class="two"><b id="clTwo">2</b>personas con demencia moderada</div>
   </div>
   <p class="clnote" id="clNote"></p>
   <i data-s="1" hidden></i><i data-s="2" hidden></i><i data-s="3" hidden></i><i data-s="4" hidden></i>
@@ -249,8 +238,8 @@
   <svg class="plot" id="psPlot" viewBox="0 0 1150 690"></svg>
   <div class="side">
     <div class="leg" id="psLeg"></div>
-    <p class="note n1"><b id="psUn">131 de 266</b> personas “Non Demented” nunca fueron evaluadas clínicamente: son adultos jóvenes (sin CDR).</p>
-    <p class="note n2">La <b>edad</b> casi separa las clases por sí sola. Una red puede aprender “joven vs. mayor” en lugar de “sano vs. demencia”.</p>
+    <p class="note n1"><b id="psUn">147 de 266</b> “Non Demented” nunca fueron evaluados: son jóvenes.</p>
+    <p class="note n2">La <b>edad</b> casi separa las clases sola.</p>
   </div>
   <i data-s="1" hidden></i><i data-s="2" hidden></i><i data-s="3" hidden></i>
 </section>
@@ -259,8 +248,8 @@
 <section class="scene tint" id="fuga" data-tr="doorv">
   <div class="hd"><p class="eyebrow">Redundancia</p><h2 class="ttl">Cortes casi idénticos y <em>fuga de datos</em></h2></div>
   <div class="corr">
-    <div data-s="1"><b id="fgAdj" style="color:var(--teal)">0.97</b><span>correlación entre cortes vecinos del mismo escaneo (medida en una muestra)</span><div class="pairs"><div class="sprite" id="fgA"></div><div class="sprite" id="fgB"></div></div></div>
-    <div data-s="1"><b id="fgRand" style="color:var(--lav)">0.6</b><span>entre dos imágenes al azar</span></div>
+    <div data-s="1"><b id="fgAdj" style="color:var(--teal)">0.97</b><span>cortes vecinos (muestra)</span><div class="pairs"><div class="sprite" id="fgA"></div><div class="sprite" id="fgB"></div></div></div>
+    <div data-s="1"><b id="fgRand" style="color:var(--lav)">0.6</b><span>imágenes al azar</span></div>
   </div>
   <div class="split" id="fgSplit" data-s="2">
     <div class="side2 tr"><h4>entrenamiento</h4></div><div class="side2 te"><h4>prueba</h4></div>
@@ -295,7 +284,7 @@
   </nav>
 
   <div class="pane" data-p="0">
-    <div class="tx"><h3>Bias field correction</h3><p>El escáner ilumina más un lado de la cabeza que el otro. La corrección empareja el brillo para que el mismo tejido se vea igual en todas partes.</p><small>arrastra la línea</small></div>
+    <div class="tx"><h3>Bias field correction</h3><p>Empareja el brillo del escáner.</p><small>arrastra la línea</small></div>
     <div class="cmp noadv" id="cmp">
       <img src="assets/generated/bias_corrupt.png" alt="Antes de la corrección">
       <div class="after"><img src="assets/generated/bias_corrected.png" alt="Después de la corrección"></div>
@@ -305,7 +294,7 @@
   </div>
 
   <div class="pane" data-p="1">
-    <div class="tx"><h3>Skull stripping</h3><p>Se encuentra la región que es cerebro, se selecciona, y todo lo demás (cráneo, piel, ojos) se quita.</p>
+    <div class="tx"><h3>Skull stripping</h3><p>Deja solo el cerebro.</p>
       <ol class="ph" id="skPh"><li>Cabeza completa</li><li>Se selecciona el cerebro</li><li>Se quita lo demás</li></ol></div>
     <div class="vw" id="skVw">
       <img class="ly sk" src="assets/generated/skull_layer_skull.png" alt="Cráneo y piel">
@@ -315,8 +304,7 @@
   </div>
 
   <div class="pane" data-p="2">
-    <div class="tx"><h3>FreeSurfer</h3><p>Un programa que recibe la resonancia y <b>etiqueta cada punto del cerebro</b>: líquido, materia gris o materia blanca (y ~100 regiones más finas). Con eso se miden volúmenes, por ejemplo cuánto se encoge la materia gris.</p>
-      <p class="sm">Tarda 6–10 h por persona. Aquí se ve la segmentación que OASIS ya incluye.</p>
+    <div class="tx"><h3>FreeSurfer</h3><p>Etiqueta cada punto del cerebro.</p>
       <div class="leg noadv" id="fsLeg">
         <button type="button" data-t="all">todo</button>
         <button type="button" data-t="csf"><i style="background:#A9CDE5"></i>líquido</button>
@@ -332,7 +320,7 @@
   </div>
 
   <div class="pane" data-p="3">
-    <div class="tx"><h3>Entropía de Shannon</h3><p>¿Cuánta información trae un corte? Si casi todo es negro (un solo tono), poca. Si está lleno de cerebro (muchos tonos de gris), mucha. Sirve para descartar los cortes vacíos.</p><small>arrastra sobre la curva</small></div>
+    <div class="tx"><h3>Entropía de Shannon</h3><p>Cuánta información trae cada corte.</p><small>arrastra sobre la curva</small></div>
     <div class="ent">
       <div class="sprite" id="enImg" data-sprite="entropy"></div>
       <div class="meter"><span>información</span><div class="bar"><i id="enBar"></i></div><div class="ends"><em>poca</em><em>mucha</em></div></div>
@@ -341,8 +329,8 @@
   </div>
 
   <div class="pane" data-p="4">
-    <div class="tx"><h3>Slice ranking</h3><p>Cada escaneo trae 61 cortes, pero no todos sirven igual. Se le pone una calificación a cada corte (información + cantidad de cerebro + nitidez) y la red solo ve los mejores.</p>
-      <ol class="ph" id="rkPh"><li>61 cortes en orden</li><li>Calificación de cada uno</li><li>Se ordenan</li><li>Nos quedamos con los mejores 10</li></ol></div>
+    <div class="tx"><h3>Slice ranking</h3><p>Califica los 61 cortes y se queda con los mejores.</p>
+      <ol class="ph" id="rkPh"><li>61 cortes en orden</li><li>Calificación</li><li>Se ordenan</li><li>Top 10</li></ol></div>
     <div class="board" id="rkBoard"></div>
   </div>
   <i data-s="1" hidden></i><i data-s="2" hidden></i><i data-s="3" hidden></i><i data-s="4" hidden></i>
@@ -365,16 +353,16 @@
   <div class="hd"><p class="eyebrow">Siendo honestos</p><h2 class="ttl">Limitaciones</h2></div>
   <div class="cols">
     <div><h4>Del trabajo anterior</h4>
-      <div class="li" data-s="1"><i>1</i><div><b>Sin notebooks ni código</b><span>Nada se puede reproducir ni revisar.</span></div></div>
-      <div class="li" data-s="1"><i>2</i><div><b>Técnicas listadas, no probadas</b><span>No sabemos qué efecto tuvo cada una.</span></div></div>
-      <div class="li" data-s="1"><i>3</i><div><b>Accuracy &lt; 0.5 sin diagnóstico</b><span>Sin métricas por clase ni explicación del fallo.</span></div></div>
-      <div class="li" data-s="1"><i>4</i><div><b>ADNI quedó en pausa</b><span>Acceso restringido y sin asesor que lo respalde.</span></div></div>
+      <div class="li" data-s="1"><i>1</i><div><b>Sin notebooks ni código</b></div></div>
+      <div class="li" data-s="1"><i>2</i><div><b>Técnicas listadas, no probadas</b></div></div>
+      <div class="li" data-s="1"><i>3</i><div><b>Accuracy &lt; 0.5 sin diagnóstico</b></div></div>
+      <div class="li" data-s="1"><i>4</i><div><b>ADNI quedó en pausa</b></div></div>
     </div>
     <div><h4>De los datos (dataset completo)</h4>
-      <div class="li" data-s="2"><i>1</i><div><b>Moderate Dementia = <span id="lmMod">2</span> personas</b><span>Non Demented tiene <span id="lmRatio">138</span>× más imágenes.</span></div></div>
-      <div class="li" data-s="2"><i>2</i><div><b>“Non Demented” mezcla personas sin evaluar</b><span><span id="lmUn">147 de 266</span> nunca tuvieron CDR (<span id="lmAge">18–57</span> años): riesgo de aprender edad.</span></div></div>
-      <div class="li" data-s="2"><i>3</i><div><b>Solo <span id="lmSl">61</span> cortes por escaneo, en JPG</b><span>Un bloque fijo (cortes <span id="lmRg">100–160</span>), no el cerebro completo.</span></div></div>
-      <div class="li" data-s="2"><i>4</i><div><b>Cientos de imágenes por persona</b><span>Mediana de <span id="lmIpp">244</span>: un split al azar pone a la misma persona en train y test (<span id="lmLeak">100%</span>).</span></div></div>
+      <div class="li" data-s="2"><i>1</i><div><b>Moderate Dementia = <span id="lmMod">2</span> personas</b></div></div>
+      <div class="li" data-s="2"><i>2</i><div><b>“Non Demented” mezcla personas sin evaluar</b><span><span id="lmUn">147 de 266</span> sin evaluar</span></div></div>
+      <div class="li" data-s="2"><i>3</i><div><b>Solo <span id="lmSl">61</span> cortes por escaneo, en JPG</b></div></div>
+      <div class="li" data-s="2"><i>4</i><div><b>Cientos de imágenes por persona</b><span><span id="lmLeak">100%</span> de fuga con split al azar</span></div></div>
     </div>
   </div>
 </section>

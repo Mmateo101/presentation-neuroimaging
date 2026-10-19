@@ -49,7 +49,7 @@
 
   /* ---------------- 01 portada: the brain's lines gather into a DNA helix that becomes the logo ---------------- */
   (function () {
-    var sc = $('#cover'), cv = $('#dnaCv'), g = cv.getContext('2d'), pts = null, t0 = 0, running = false;
+    var sc = $('#cover'), cv = $('#dnaCv'), g = cv.getContext('2d'), pts = null, groups = [], t0 = 0, running = false;
     /* final helix = the logo helix in stage coordinates (logoG: translate(960 440) scale(1.7) translate(-350 -225)) */
     var LOGO = { x0: 960 + 1.7 * (70 - 350), x1: 960 + 1.7 * (630 - 350), cy: 440 + 1.7 * (345 - 225), amp: 1.7 * 62, period: 1.7 * 280 };
     var LOOSE = { x0: 150, x1: 1770, cy: 540, amp: 300, period: 820 };
@@ -62,7 +62,9 @@
       var total = lens.reduce(function (a, b) { return a + b; }, 0), stepL = total / 1500, out = [];
       paths.forEach(function (p, k) {
         var col = hexRgb(p.getAttribute('stroke') || '#2FD0C6');
-        for (var d = 0; d < lens[k]; d += stepL) { var q = p.getPointAtLength(d); out.push({ bx: q.x, by: q.y, col: col }); }
+        var gr = { col: col, pts: [] };
+        for (var d = 0; d < lens[k]; d += stepL) { var q = p.getPointAtLength(d), o = { bx: q.x, by: q.y, col: col, gid: k % 7 }; out.push(o); gr.pts.push(o); }
+        if (gr.pts.length > 1) groups.push(gr);
       });
       out.sort(function (a, b) { return a.bx - b.bx; });
       /* roles: strand A, strand B, rungs; each strand point keeps its left-to-right order */
@@ -75,6 +77,21 @@
       R.forEach(function (o, i) { o.role = 2; o.rung = (x = rungX[i % rungX.length], (x - 70) / 560); o.v = rnd() * 2 - 1; });
       out.forEach(function (o) { o.jx = (rnd() - .5) * 2; o.jy = (rnd() - .5) * 2; o.delay = rnd() * .5; });
       return out;
+    }
+    /* the brain drawn as lines (same points, in path order), drifting like a current */
+    var LINE_T = 2.2;
+    function wave(o, e) {
+      var a = 34 * Math.min(1, e / 1.6);
+      return [o.bx + a * Math.sin(o.by * .011 + e * 2.6 + o.gid), o.by + a * Math.cos(o.bx * .009 + e * 2.1 + o.gid * .7)];
+    }
+    function drawLines(e, alpha) {
+      g.lineWidth = 4; g.lineCap = 'round'; g.lineJoin = 'round';
+      groups.forEach(function (gr) {
+        g.strokeStyle = 'rgba(' + gr.col.join(',') + ',' + alpha.toFixed(2) + ')';
+        g.beginPath();
+        gr.pts.forEach(function (o, i) { var p = wave(o, e); if (i) g.lineTo(p[0], p[1]); else g.moveTo(p[0], p[1]); });
+        g.stroke();
+      });
     }
     function target(o, H, ph, noise) {
       var u = o.role === 2 ? o.rung : o.u, x = mix(H.x0, H.x1, u), th = (x - H.x0) / H.period * 2 * Math.PI + ph, s = Math.sin(th), y;
@@ -95,7 +112,7 @@
       if (fade <= 0) return false;
       for (var i = 0; i < pts.length; i++) {
         var o = pts[i], u = ez(Math.max(0, Math.min(1, (gather - o.delay * .6) / (1 - o.delay * .6))));
-        var tg = target(o, H, spin, noise), x = mix(o.bx, tg[0], u), y = mix(o.by, tg[1], u);
+        var tg = target(o, H, spin, noise), x = mix(o.sx, tg[0], u), y = mix(o.sy, tg[1], u);
         var c = o.role === 1 ? SKY : TEAL, r = Math.round(mix(o.col[0], c[0], u)), gg = Math.round(mix(o.col[1], c[1], u)), b = Math.round(mix(o.col[2], c[2], u));
         g.fillStyle = 'rgba(' + r + ',' + gg + ',' + b + ',' + (fade * (o.role === 2 ? .8 : 1)).toFixed(2) + ')';
         var rad = mix(2.2, o.role === 2 ? 3.2 : 4.6, settle);
@@ -114,11 +131,23 @@
     TICK.cover = function (t) {
       if (!running) return;
       if (!t0) t0 = t;
-      var e = t - t0, alive = frame(e);
-      sc.classList.toggle('dna-done', e > 5.9);
-      sc.classList.toggle('pins', e > 6.5);
-      sc.classList.toggle('word', e > 7.4);
-      if (!alive && e > 8) running = false;
+      var e = t - t0, alive = true;
+      if (e < LINE_T) {
+        g.clearRect(0, 0, 1920, 1080);
+        drawLines(e, 1 - Math.max(0, (e - 1.5) / .7));
+        if (e > 1.5) {          /* lines break into points */
+          var a = (e - 1.5) / .7;
+          pts.forEach(function (o) { var p = wave(o, e); g.fillStyle = 'rgba(' + o.col.join(',') + ',' + a.toFixed(2) + ')'; g.beginPath(); g.arc(p[0], p[1], 2.2, 0, 6.2832); g.fill(); });
+        }
+      } else {
+        if (!pts[0].sx) pts.forEach(function (o) { var p = wave(o, LINE_T); o.sx = p[0]; o.sy = p[1]; });
+        alive = frame(e - LINE_T);
+      }
+      var d = e - LINE_T;
+      sc.classList.toggle('dna-done', d > 5.9);
+      sc.classList.toggle('pins', d > 6.5);
+      sc.classList.toggle('word', d > 7.4);
+      if (!alive && d > 8) running = false;
     };
   })();
 
@@ -227,54 +256,24 @@
     };
   })();
 
-  /* ---------------- 06 demencia: drag across CDR levels, the illustrated brain shrinks ---------------- */
+  /* ---------------- 06 demencia: real scans at the same brain level, one per CDR level ---------------- */
   (function () {
-    var prof = D.cdr_profile || [{ cdr: 0, mmse: 29, nwbv: .752 }, { cdr: .5, mmse: 25.6, nwbv: .729 }, { cdr: 1, mmse: 21.7, nwbv: .706 }, { cdr: 2, mmse: 15, nwbv: .684 }];
-    var lv = [['Sano', 'Non Demented', 'Memoria y vida diaria normales.'],
-      ['Muy leve', 'Very mild Dementia', 'Olvidos frecuentes, pero la persona sigue siendo independiente.'],
-      ['Leve', 'Mild Dementia', 'La pérdida de memoria ya complica el día a día.'],
-      ['Moderada', 'Moderate Dementia', 'Necesita ayuda para cuidarse.']];
-    /* brain outline + sulci, generated once */
-    var ctx = '', a, r;
-    for (a = 0; a <= 360; a += 3) {
-      var th = a * Math.PI / 180, k = 1 + .035 * Math.sin(9 * th) + .02 * Math.sin(17 * th + 1);
-      ctx += (a ? 'L' : 'M') + (150 * k * Math.sin(th)).toFixed(1) + ' ' + (-175 * k * Math.cos(th)).toFixed(1);
-    }
-    $('#dmCtx').setAttribute('d', ctx + 'Z');
-    var sul = $('#dmSul'), sulci = [];
-    for (a = 8; a < 360; a += 22) {
-      if (Math.abs(a - 180) < 12 || a < 10 || a > 350) continue;
-      var t1 = a * Math.PI / 180, x1 = 150 * Math.sin(t1), y1 = -175 * Math.cos(t1), x2 = x1 * .62, y2 = y1 * .62, mx = (x1 + x2) / 2 + 14 * Math.cos(t1), my = (y1 + y2) / 2 + 14 * Math.sin(t1);
-      sulci.push(svg('path', { d: 'M' + x1.toFixed(1) + ' ' + y1.toFixed(1) + 'Q' + mx.toFixed(1) + ' ' + my.toFixed(1) + ' ' + x2.toFixed(1) + ' ' + y2.toFixed(1) }, sul));
-    }
-    var B = $('#dmB'), V = $('#dmVen'), sld = $('#dmSld'), knob = $('#dmKnob'), stops = [];
+    var lv = [['nd', 'Sano', 'CDR 0'], ['vmd', 'Muy leve', 'CDR 0.5'], ['md', 'Leve', 'CDR 1'], ['mod', 'Moderada', 'CDR 2']];
+    var wrap = $('#dmThumbs'), big = $('#dmImg'), th = [];
     lv.forEach(function (l, i) {
-      var s = document.createElement('div'); s.className = 'stp2'; s.style.left = (i / 3 * 100) + '%'; s.textContent = l[0];
-      sld.appendChild(s); stops.push(s);
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'th';
+      b.innerHTML = '<img src="' + G + 'dementia_' + l[0] + '.jpg" alt="' + l[1] + '"><span><b>' + l[1] + '</b>' + l[2] + '</span>';
+      b.addEventListener('click', function () { if (window.DECK) DECK.setStep(i); });
+      wrap.appendChild(b); th.push(b);
     });
-    var cur = 0, target = 0, drag = false;
-    function lerp(f, key) { var i = Math.min(2, Math.floor(f)), u = f - i; return prof[i][key] * (1 - u) + prof[i + 1][key] * u; }
-    function draw(f) {
-      var nw = lerp(f, 'nwbv'), mm = lerp(f, 'mmse'), sc = 1 - (prof[0].nwbv - nw) * 2.4;
-      B.setAttribute('transform', 'scale(' + sc.toFixed(3) + ')');
-      V.setAttribute('transform', 'scale(' + (.42 * (1 + f * .5)).toFixed(3) + ')');
-      sulci.forEach(function (p) { p.setAttribute('stroke-width', (5 + f * 4).toFixed(1)); });
-      knob.style.left = (f / 3 * 100) + '%';
-      $('#dmVol').style.transform = 'scaleX(' + nw.toFixed(3) + ')';
-      $('#dmMm').style.transform = 'scaleX(' + (mm / 30).toFixed(3) + ')';
-      set('dmVolN', Math.round(nw * 100) + '%'); set('dmMmN', Math.round(mm) + ' / 30');
-      var n = Math.round(f), L = lv[n];
-      set('dmLvl', L[0]); set('dmCdr', 'CDR ' + prof[n].cdr + ' · en el dataset: ' + L[1]); set('dmDsc', L[2]);
-      stops.forEach(function (s, i) { s.classList.toggle('on', i === n); });
-    }
-    function fromEvent(e) { var rc = sld.getBoundingClientRect(); return Math.max(0, Math.min(3, (e.clientX - rc.left) / rc.width * 3)); }
-    sld.addEventListener('pointerdown', function (e) { drag = true; sld.setPointerCapture(e.pointerId); target = cur = fromEvent(e); draw(cur); });
-    sld.addEventListener('pointermove', function (e) { if (drag && e.buttons) { target = cur = fromEvent(e); draw(cur); } });
-    sld.addEventListener('pointerup', function () { drag = false; if (window.DECK) DECK.setStep(Math.round(cur)); });
-    SH.demencia = function (sc, step) { target = step; };
-    SH.demencia.reset = function () { cur = target = 0; draw(0); };
-    TICK.demencia = function () { if (drag) return; if (Math.abs(target - cur) > .002) { cur += (target - cur) * .08; draw(cur); } };
-    draw(0);
+    SH.demencia = function (sc, step) {
+      var l = lv[Math.min(step, 3)];
+      th.forEach(function (b, i) { b.classList.toggle('on', i === Math.min(step, 3)); });
+      big.style.opacity = 0;
+      setTimeout(function () { big.src = G + 'dementia_' + l[0] + '.jpg'; big.style.opacity = 1; }, 180);
+      set('dmLbl', l[1] + ' · ' + l[2]);
+    };
   })();
 
   /* ---------------- 07 metodología: four stages, last semester's models and metrics ---------------- */
@@ -300,7 +299,7 @@
     });
     $('#mtCm').innerHTML = '<span></span><span class="ttl2" style="grid-column:2/5">ResNet50 · columnas = predicho, filas = real</span>' + h;
     var predMCI = R.reduce(function (s, r) { return s + r[1]; }, 0) / R.reduce(function (s, r) { return s + r[0] + r[1] + r[2]; }, 0);
-    $('#mtWarn').innerHTML = 'Predijo <b>MCI</b> en el ' + Math.round(predMCI * 100) + '% de las imágenes y reconoció solo el ' + Math.round(R[2][2] / (R[2][0] + R[2][1] + R[2][2]) * 100) + '% de los casos de Alzheimer. La accuracy sola no lo muestra.';
+    $('#mtWarn').innerHTML = 'Casi todo → <b>MCI</b> (' + Math.round(predMCI * 100) + '%). Alzheimer acertado: ' + Math.round(R[2][2] / (R[2][0] + R[2][1] + R[2][2]) * 100) + '%.';
     var nodes = $$('#metodo .nd3'), panes = $$('#metodo .mp');
     nodes.forEach(function (b) { b.addEventListener('click', function () { if (window.DECK) DECK.setStep(+b.dataset.i); }); });
     SH.metodo = function (sc, step) {
@@ -363,9 +362,9 @@
     if (mod) set('clTwo', mod.subjects);
     var O = (D.oasis1 && D.oasis1.by_class) || {};
     var modes = [
-      ['images', 'imágenes', 'Todas las imágenes del dataset (' + fmt(D.n_images || 0) + '), no una muestra.'],
-      ['subjects', 'personas en el dataset', 'Las ' + fmt(D.n_subjects || 0) + ' personas del dataset de Kaggle.'],
-      ['oasis', 'personas en OASIS-1', 'Las ' + fmt((D.oasis1 || {}).subjects || 0) + ' personas de OASIS-1 (tabla clínica oficial). Las ' + fmt((D.oasis1 || {}).cdr_unrated || 0) + ' sin CDR cuentan como Non Demented.']];
+      ['images', 'imágenes', 'Todo el dataset, no una muestra.'],
+      ['subjects', 'personas en el dataset', ''],
+      ['oasis', 'personas en OASIS-1', 'Tabla clínica oficial de OASIS-1.']];
     SH.clases = function (sc, step) {
       var md = modes[Math.max(0, Math.min(step, 3) - 1)];
       var val = function (c) { return md[0] === 'oasis' ? (O[c.key] || 0) : c[md[0]]; };
@@ -446,8 +445,8 @@
       var inTrain = {}; tr.forEach(function (o) { inTrain[o.p] = 1; });
       dots.forEach(function (o, j) { o.el.classList.toggle('leak', step >= 2 && testOf[j] && !!inTrain[o.p]); });
       var v = $('#fgVerdict');
-      if (step >= 3) v.innerHTML = 'Split <b>por persona</b>: nadie está en los dos lados → <b style="color:var(--teal)">0% de fuga</b>.';
-      else if (step >= 2) v.innerHTML = 'Split <b>al azar</b> (cada color = una persona): en OASIS, <b style="color:#B3263A">' + fmt((D.leak_random_split || 0) * 100, 1) + '%</b> de las imágenes de prueba tienen a su persona en entrenamiento.';
+      if (step >= 3) v.innerHTML = 'Split <b>por persona</b>: <b style="color:var(--teal)">0% de fuga</b>';
+      else if (step >= 2) v.innerHTML = 'Split <b>al azar</b>: <b style="color:#B3263A">' + fmt((D.leak_random_split || 0) * 100, 0) + '% de fuga</b>';
       else v.innerHTML = '';
     };
   })();
@@ -474,11 +473,11 @@
       return '<div><b style="color:' + CLS[r[0]] + '">' + r[1] + '</b>' + r[2] + '</div>';
     }).join('');
     var states = [
-      [fmt(D.n_images || 0), 'imágenes', 'Parece muchísimo…'],
-      [fmt(ppl), 'personas', 'Cada persona aporta unas <b>' + fmt(D.images_per_subject_median || 0) + ' imágenes casi idénticas</b>. Lo que cuenta de verdad son las personas.'],
-      [fmt(ppl - un), 'personas', '<b>' + un + ' “Non Demented”</b> nunca fueron evaluadas (sin CDR, ' + age[0] + '–' + age[1] + ' años). Si se quedan, la red aprende edad.'],
-      [fmt(ppl - un - mod), 'personas', '<b>Moderate Dementia son ' + mod + ' personas</b>: no alcanza para entrenar y probar.'],
-      [fmt(ppl - un - mod), 'personas útiles', 'En 3 clases. Este es el tamaño real del problema.']];
+      [fmt(D.n_images || 0), 'imágenes', 'Parece mucho…'],
+      [fmt(ppl), 'personas', '~' + fmt(D.images_per_subject_median || 0) + ' imágenes casi iguales por persona'],
+      [fmt(ppl - un), 'personas', '−' + un + ' sin evaluar (jóvenes)'],
+      [fmt(ppl - un - mod), 'personas', '−' + mod + ' Moderate: no alcanza'],
+      [fmt(ppl - un - mod), 'personas útiles', '3 clases']];
     SH.cuantos = function (sc, step) {
       var st = states[Math.min(step, 4)];
       set('cqNum', st[0]); set('cqUnit', st[1]); $('#cqTxt').innerHTML = st[2];
