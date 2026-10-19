@@ -425,6 +425,13 @@ STATS['oasis1'] = {'subjects': int(len(clin1)), 'sessions': int(len(clin)),
                    'cdr_unrated': int(clin1.CDR.isna().sum()), 'demented': int((clin1.CDR > 0).sum()),
                    'by_class': {k: int(v) for k, v in cdr_all.value_counts().items()}}
 print('OASIS-1 population by class (unrated counted as Non Demented):', STATS['oasis1']['by_class'])
+
+# Profile per CDR level among people aged 60+ (similar ages, so the comparison is about dementia, not age)
+old = clin1[clin1.CDR.notna() & (clin1.Age >= 60)]
+prof = old.groupby('CDR').agg(n=('Age', 'size'), age=('Age', 'mean'), mmse=('MMSE', 'mean'), nwbv=('nWBV', 'mean')).round(3)
+savetab(prof, '09_cdr_profile_60plus')
+STATS['cdr_profile'] = [{'cdr': float(k), 'n': int(r.n), 'age': round(float(r.age), 1), 'mmse': round(float(r.mmse), 1),
+                         'nwbv': round(float(r.nwbv), 3)} for k, r in prof.iterrows()]
 STATS['nd_total'] = int(len(nd))
 STATS['scatter'] = [[int(r.Age), round(float(r.nWBV), 3), CLASS_KEY.get(r.label, ''), int(pd.isna(r.CDR))]
                     for _, r in subj.dropna(subset=['Age', 'nWBV']).iterrows()]
@@ -459,6 +466,7 @@ savetab(fmt, '10_image_format')
 df.bytes.div(1e3).plot.hist(bins=50, color=TEAL, title='File size distribution (all images)')
 plt.xlabel('KB')
 savefig('10_file_size')
+STATS['rgb_identical'] = float(info.rgb_identical.dropna().mean()) if info.rgb_identical.notna().any() else None
 STATS.update(img_w=int(mc[0]), img_h=int(mc[1]), img_mode=str(info['mode'].mode()[0]),
              img_kb_median=round(df.bytes.median() / 1e3, 1))
 
@@ -528,6 +536,19 @@ for a, (c, v) in zip(np.ravel(ax), scan_by_class.items()):
     a.imshow(img, cmap='gray'); a.axis('off'); a.set_title(f'{c}\n{v}, slice {mid}', fontsize=8)
     save_asset(img.astype(np.uint8), f'class_{CLASS_KEY[c]}.jpg')
 savefig('11_same_slice_across_classes')
+
+# An 8x8 patch of real pixel values (the most varied one in the brain) to show that a slice is just numbers
+nd_img = load(scan_paths(scan_by_class['Non Demented']).set_index('slice').loc[mid].path)
+P, best = 8, (0, 0, 0)
+for y in range(80, 170 - P, 2):
+    for x in range(110, 270 - P, 2):
+        sd = nd_img[y:y + P, x:x + P].std()
+        if sd > best[0]:
+            best = (sd, y, x)
+_, py, px = best
+STATS['patch'] = {'img': 'class_nd.jpg', 'x': int(px), 'y': int(py), 'size': P, 'w': int(nd_img.shape[1]),
+                  'h': int(nd_img.shape[0]), 'values': nd_img[py:py + P, px:px + P].round().astype(int).tolist()}
+print('Patch at', (px, py), 'values', STATS['patch']['values'][0])
 
 # %% [markdown]
 # ## 12. Do the images represent full 3D brains? (slice coverage)

@@ -27,6 +27,7 @@
       <g class="pin lp" style="--fx:1500px;--fy:-500px;--l:1.2s"><path d="M530 160 H510 Q496 160 496 176 V272"/><circle cx="550" cy="160" r="20"/></g>
     </g>
   </svg>
+  <canvas id="dnaCv" width="1920" height="1080" aria-hidden="true"></canvas>
   <div class="center"><p class="k">GenoBit · Proyecto</p><h1>Neuroimaging</h1></div>
   <div id="wordmark"><b>GenoBit</b><span>Genomics and Bioinformatics</span></div>
 </section>
@@ -90,41 +91,54 @@
   <i data-s="5" hidden></i>
 </section>
 
-<!-- 05 MOTIVACIÓN -->
-<section class="scene dark" id="motiv" data-tr="zoom">
-  <div class="hd"><p class="eyebrow">Neuroimaging · motivación</p><h2 class="ttl">¿Por qué <em>imágenes de cerebro</em>?</h2></div>
-  <div class="cols">
-    <div class="mc" data-s="1"><h3>El problema</h3><p>El deterioro cognitivo afecta memoria, atención, lenguaje y motricidad. Está ligado al Alzheimer, al Parkinson y a otras demencias.</p></div>
-    <div class="mc" data-s="2"><h3>El reto</h3><p>Leer una resonancia (MRI) es tardado, subjetivo y depende de la experiencia del especialista, sobre todo cuando los cambios son sutiles.</p></div>
+<!-- 05 IMÁGENES DEL CEREBRO -->
+<section class="scene dark" id="mri" data-tr="zoom">
+  <div class="hd"><p class="eyebrow">Antes de los datos</p><h2 class="ttl">Imágenes del <em>cerebro</em></h2></div>
+  <div class="mtx">
+    <p class="ms" data-k="0">Una resonancia no es una foto: es un <b>volumen en 3D</b> de la cabeza. El escáner lo recorre <b>corte por corte</b>.</p>
+    <p class="ms" data-k="1">Apilados, los cortes forman el volumen. Cada cubito de ese volumen es un <b>vóxel</b>: un pixel en 3D.</p>
+    <p class="ms" data-k="2">Cada corte es una imagen en <b>escala de grises</b>: cada pixel es un número, de <b>0 (negro)</b> a <b>255 (blanco)</b>.</p>
+    <p class="ms" data-k="3"><b>En nuestro dataset</b>, cada archivo es uno de esos cortes, ya guardado como imagen.</p>
   </div>
-  <div class="coinw" data-s="3">
-    <div class="coin"><div class="face">50%</div><div class="face b">?</div></div>
-    <div class="acc">accuracy &lt; 0.5<small>El modelo del semestre pasado: peor que lanzar una moneda.</small></div>
+  <svg class="head" viewBox="0 0 360 460" aria-label="Cabeza de perfil dentro del escáner">
+    <path class="hd-s" d="M120 40c80-30 170 0 195 80 14 44 4 80 14 110l26 44c6 12-4 20-14 22l-12 2 6 30c3 16-8 26-24 28l-34 4c-10 2-14 10-12 22l6 48H120l-8-70C60 330 30 270 34 190 38 110 70 58 120 40z"/>
+    <ellipse class="hd-b" cx="170" cy="160" rx="110" ry="98"/>
+    <g class="scan" id="mriScan"><rect x="-10" y="-3" width="380" height="6" rx="3"/><rect class="glow" x="-10" y="-22" width="380" height="44"/></g>
+  </svg>
+  <div class="vol"><div class="stack" id="mriStack"></div></div>
+  <div class="px">
+    <div class="pimg"><img src="assets/generated/class_nd.jpg" alt="Un corte del dataset"><i id="pxBox"></i></div>
+    <div class="grid8" id="pxGrid"></div>
+    <div class="gbar"><span>0</span><i></i><span>255</span></div>
+    <p class="gtis">líquido · oscuro &nbsp;&nbsp; materia gris · gris &nbsp;&nbsp; materia blanca · claro</p>
   </div>
-  <div class="banner" data-s="4">Antes de clasificar, hay que asegurar la calidad de las imágenes.</div>
+  <div class="dsf" data-s="3">
+    <div><b>1 archivo = 1 corte</b><span>axial, visto desde arriba</span></div>
+    <div><b id="mriWH">496 × 248</b><span>pixeles</span></div>
+    <div><b>Gris</b><span>guardado en RGB, pero los 3 canales son idénticos</span></div>
+    <div><b id="mriN">61</b><span>cortes por escaneo</span></div>
+  </div>
+  <i data-s="1" hidden></i><i data-s="2" hidden></i>
 </section>
 
 <!-- 06 DEMENCIA -->
 <section class="scene light" id="demencia" data-tr="door">
-  <div class="hd"><p class="eyebrow">Contexto</p><h2 class="ttl">¿Qué es la <em>demencia</em>?</h2></div>
-  <div class="def">
-    <p class="lead2">Un deterioro de memoria, lenguaje o razonamiento lo bastante fuerte para <b>interferir con la vida diaria</b>. No es una sola enfermedad: es un síndrome con varias causas.</p>
-    <div class="types">
-      <div class="ty main" data-s="1"><b>Alzheimer</b><span>La causa más común: 60–70% de los casos (OMS). Empieza por la memoria; el hipocampo se encoge.</span></div>
-      <div class="ty" data-s="1"><b>Vascular</b><span>Por daño en los vasos del cerebro (infartos pequeños).</span></div>
-      <div class="ty" data-s="1"><b>Cuerpos de Lewy</b><span>Alucinaciones, fluctuaciones y síntomas tipo Parkinson.</span></div>
-      <div class="ty" data-s="1"><b>Frontotemporal</b><span>Cambios de conducta y lenguaje, suele empezar antes de los 65.</span></div>
-    </div>
-    <p class="mci" data-s="1"><b>DCL / MCI</b> (deterioro cognitivo leve): fallas mayores a lo normal para la edad, pero la persona sigue siendo independiente. Puede o no avanzar a demencia.</p>
+  <div class="hd"><p class="eyebrow">Contexto</p><h2 class="ttl">¿Qué es la <em>demencia</em>?</h2>
+    <p class="lead" style="font-size:30px;margin-top:14px">Cuando la pérdida de memoria y razonamiento ya afecta la vida diaria. La causa más común es el Alzheimer.</p></div>
+  <svg class="brainx" id="dmBrain" viewBox="-220 -230 440 460" aria-label="Ilustración de un cerebro que se encoge con la demencia">
+    <ellipse class="skull" cx="0" cy="0" rx="190" ry="214"/>
+    <g id="dmB"><path class="ctx" id="dmCtx"/><g id="dmSul"></g><path class="mid" d="M0 -185V185"/><g id="dmVen"><path class="ven" d="M-8 -60c-40 -6-62 20-58 58 4 30 22 44 30 74 4 14 18 14 22 0 6-26-6-60 6-132z"/><path class="ven" d="M8 -60c40 -6 62 20 58 58-4 30-22 44-30 74-4 14-18 14-22 0-6-26 6-60-6-132z"/></g></g>
+  </svg>
+  <div class="dmr">
+    <b class="lvl" id="dmLvl">Sano</b>
+    <span class="cdrl" id="dmCdr">CDR 0 · en el dataset: Non Demented</span>
+    <p class="dsc" id="dmDsc"></p>
+    <div class="mt"><span>Volumen del cerebro</span><div class="bar"><i id="dmVol"></i></div><b id="dmVolN">75%</b></div>
+    <div class="mt"><span>MMSE · memoria y razonamiento</span><div class="bar"><i id="dmMm"></i></div><b id="dmMmN">29 / 30</b></div>
+    <div class="sld noadv" id="dmSld"><div class="rail"></div><div class="knob" id="dmKnob"></div></div>
+    <p class="src2">Ilustración. Los valores son promedios reales de OASIS-1 (personas de 60 años o más).</p>
   </div>
-  <div class="cdr">
-    <p class="cap" style="margin:0 0 12px">Escala CDR · Clinical Dementia Rating</p>
-    <div class="cimg"><img id="cdrImg" src="assets/generated/class_nd.jpg" alt="Corte de resonancia de la clase seleccionada"></div>
-    <div class="ctrack noadv" id="cdrTrack"></div>
-    <div class="cinfo"><b id="cdrName">CDR 0 · Normal</b><span id="cdrMap">OASIS: Non Demented · ADNI: CN</span><p id="cdrTxt"></p></div>
-  </div>
-  <div class="gloss" data-s="2"><span><b>MMSE</b> examen cognitivo de 0 a 30 puntos</span><span><b>CN · MCI · AD</b> etiquetas de ADNI: normal, deterioro leve, Alzheimer</span></div>
-  <i data-s="2" hidden></i><i data-s="3" hidden></i><i data-s="4" hidden></i><i data-s="5" hidden></i>
+  <i data-s="1" hidden></i><i data-s="2" hidden></i><i data-s="3" hidden></i>
 </section>
 
 <!-- 07 METODOLOGÍA -->

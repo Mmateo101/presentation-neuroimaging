@@ -47,6 +47,81 @@
   }
   $$('[data-sprite]').forEach(function (el) { initSprite(el, spriteMeta(el.dataset.sprite)); });
 
+  /* ---------------- 01 portada: the brain's lines gather into a DNA helix that becomes the logo ---------------- */
+  (function () {
+    var sc = $('#cover'), cv = $('#dnaCv'), g = cv.getContext('2d'), pts = null, t0 = 0, running = false;
+    /* final helix = the logo helix in stage coordinates (logoG: translate(960 440) scale(1.7) translate(-350 -225)) */
+    var LOGO = { x0: 960 + 1.7 * (70 - 350), x1: 960 + 1.7 * (630 - 350), cy: 440 + 1.7 * (345 - 225), amp: 1.7 * 62, period: 1.7 * 280 };
+    var LOOSE = { x0: 150, x1: 1770, cy: 540, amp: 300, period: 820 };
+    var ez = function (u) { return u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2; };
+    var mix = function (a, b, u) { return a + (b - a) * u; };
+    function hexRgb(h) { h = h.replace('#', ''); return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]; }
+
+    function sample() {
+      var paths = $$('#brainG path'), lens = paths.map(function (p) { return p.getTotalLength(); });
+      var total = lens.reduce(function (a, b) { return a + b; }, 0), stepL = total / 1500, out = [];
+      paths.forEach(function (p, k) {
+        var col = hexRgb(p.getAttribute('stroke') || '#2FD0C6');
+        for (var d = 0; d < lens[k]; d += stepL) { var q = p.getPointAtLength(d); out.push({ bx: q.x, by: q.y, col: col }); }
+      });
+      out.sort(function (a, b) { return a.bx - b.bx; });
+      /* roles: strand A, strand B, rungs; each strand point keeps its left-to-right order */
+      var seed = 3; function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+      var A = [], B = [], R = [];
+      out.forEach(function (o) { var r = rnd(); (r < .42 ? A : r < .84 ? B : R).push(o); });
+      A.forEach(function (o, i) { o.role = 0; o.u = i / (A.length - 1); });
+      B.forEach(function (o, i) { o.role = 1; o.u = i / (B.length - 1); });
+      var rungX = []; for (var x = 84; x <= 616; x += 28) { var s = Math.sin((x - 70) / 280 * 2 * Math.PI); if (Math.abs(s) >= .4) rungX.push(x); }
+      R.forEach(function (o, i) { o.role = 2; o.rung = (x = rungX[i % rungX.length], (x - 70) / 560); o.v = rnd() * 2 - 1; });
+      out.forEach(function (o) { o.jx = (rnd() - .5) * 2; o.jy = (rnd() - .5) * 2; o.delay = rnd() * .5; });
+      return out;
+    }
+    function target(o, H, ph, noise) {
+      var u = o.role === 2 ? o.rung : o.u, x = mix(H.x0, H.x1, u), th = (x - H.x0) / H.period * 2 * Math.PI + ph, s = Math.sin(th), y;
+      if (o.role === 0) y = H.cy + H.amp * s;
+      else if (o.role === 1) y = H.cy - H.amp * s;
+      else y = H.cy + H.amp * s * .82 * o.v;
+      return [x + o.jx * noise, y + o.jy * noise];
+    }
+    var TEAL = [0, 112, 111], SKY = [169, 205, 229];
+    function frame(e) {
+      /* 0-2.4 s gather into a loose wide helix; 2.4-4.6 s it twists and tightens; 4.6-6.2 s it settles into the logo */
+      g.clearRect(0, 0, 1920, 1080);
+      var gather = Math.min(1, e / 2.4), settle = ez(Math.max(0, Math.min(1, (e - 4.6) / 1.6)));
+      var H = {}; for (var k in LOGO) H[k] = mix(LOOSE[k], LOGO[k], settle);
+      var spin = e < 4.6 ? e * 2.2 : mix(4.6 * 2.2, Math.ceil(4.6 * 2.2 / (2 * Math.PI)) * 2 * Math.PI, settle);
+      var noise = 60 * (1 - ez(Math.max(0, Math.min(1, (e - 1.2) / 3.4))));
+      var fade = 1 - Math.max(0, Math.min(1, (e - 6.0) / .7));
+      if (fade <= 0) return false;
+      for (var i = 0; i < pts.length; i++) {
+        var o = pts[i], u = ez(Math.max(0, Math.min(1, (gather - o.delay * .6) / (1 - o.delay * .6))));
+        var tg = target(o, H, spin, noise), x = mix(o.bx, tg[0], u), y = mix(o.by, tg[1], u);
+        var c = o.role === 1 ? SKY : TEAL, r = Math.round(mix(o.col[0], c[0], u)), gg = Math.round(mix(o.col[1], c[1], u)), b = Math.round(mix(o.col[2], c[2], u));
+        g.fillStyle = 'rgba(' + r + ',' + gg + ',' + b + ',' + (fade * (o.role === 2 ? .8 : 1)).toFixed(2) + ')';
+        var rad = mix(2.2, o.role === 2 ? 3.2 : 4.6, settle);
+        g.beginPath(); g.arc(x, y, rad, 0, 6.2832); g.fill();
+      }
+      return true;
+    }
+    SH.cover = function (s, step) {
+      if (step === 1 && !running) {
+        pts = pts || sample(); t0 = 0; running = true;
+      } else if (step === 0) {
+        running = false; g.clearRect(0, 0, 1920, 1080); sc.classList.remove('dna-done', 'pins', 'word');
+      }
+    };
+    SH.cover.reset = function () { running = false; g.clearRect(0, 0, 1920, 1080); sc.classList.remove('dna-done', 'pins', 'word'); };
+    TICK.cover = function (t) {
+      if (!running) return;
+      if (!t0) t0 = t;
+      var e = t - t0, alive = frame(e);
+      sc.classList.toggle('dna-done', e > 5.9);
+      sc.classList.toggle('pins', e > 6.5);
+      sc.classList.toggle('word', e > 7.4);
+      if (!alive && e > 8) running = false;
+    };
+  })();
+
   /* ---------------- 03 genobit: the logo's DNA drawn in, then twisting ---------------- */
   (function () {
     var g = $('#lgHelix'), rungs = [], x;
@@ -108,30 +183,98 @@
     };
   })();
 
-  /* ---------------- 06 demencia: types + CDR scale with real scans ---------------- */
+  /* ---------------- 05 imágenes del cerebro: scanner -> slices -> 3D volume -> pixels -> dataset ---------------- */
   (function () {
-    var stops = [
-      ['0', 'Normal', 'OASIS: Non Demented · ADNI: CN', 'Sin problemas de memoria ni en la vida diaria.', 'nd'],
-      ['0.5', 'Muy leve', 'OASIS: Very mild Dementia · ADNI: MCI (aprox.)', 'Olvidos leves pero constantes; la persona sigue siendo independiente.', 'vmd'],
-      ['1', 'Leve', 'OASIS: Mild Dementia · ADNI: AD', 'La pérdida de memoria ya afecta las actividades del día a día.', 'md'],
-      ['2', 'Moderada', 'OASIS: Moderate Dementia · ADNI: AD', 'Necesita ayuda para cuidarse. En OASIS-1 solo hay 2 personas así.', 'mod'],
-      ['3', 'Severa', 'No aparece en OASIS-1', 'Dependencia total; no hay resonancias de esta etapa en el dataset.', null]];
-    var tr = $('#cdrTrack'), img = $('#cdrImg'), btns = [];
-    stops.forEach(function (s, i) {
-      var b = document.createElement('button');
-      b.type = 'button'; b.className = 'stop' + (s[4] ? '' : ' na');
-      b.style.left = (i / (stops.length - 1) * 100) + '%';
-      b.innerHTML = '<i></i><span>' + s[0] + '</span>';
-      b.addEventListener('click', function () { if (window.DECK) DECK.setStep(i + 1); });
-      tr.appendChild(b); btns.push(b);
-    });
-    SH.demencia = function (sc, step) {
-      var k = Math.max(0, Math.min(4, step - 1)), s = stops[k];
-      btns.forEach(function (b, i) { b.classList.toggle('on', i === k); });
-      set('cdrName', 'CDR ' + s[0] + ' · ' + s[1]); set('cdrMap', s[2]); set('cdrTxt', s[3]);
-      img.style.opacity = s[4] ? 1 : .12;
-      if (s[4]) img.src = G + 'class_' + s[4] + '.jpg';
+    var meta = D.plane_sprites && D.plane_sprites.axial, stack = $('#mriStack'), scan = $('#mriScan');
+    var sls = [], N = 15, msgs = $$('#mri .ms');
+    if (meta) {
+      for (var i = 0; i < N; i++) {
+        var s = document.createElement('div');
+        s.className = 'sl sprite';
+        s.style.setProperty('--z', ((i - (N - 1) / 2) * 22) + 'px');
+        stack.appendChild(s); initSprite(s, meta);
+        setFrame(s, Math.round(8 + i / (N - 1) * (meta.frames - 16)));
+        sls.push(s);
+      }
+    }
+    set('mriWH', (D.img_w || 496) + ' × ' + (D.img_h || 248));
+    set('mriN', D.slices_per_scan || 61);
+    var P = D.patch;
+    if (P) {
+      var box = $('#pxBox');
+      box.style.left = (P.x / P.w * 100) + '%'; box.style.top = (P.y / P.h * 100) + '%';
+      box.style.width = (P.size / P.w * 100) + '%'; box.style.height = (P.size / P.h * 100) + '%';
+      $('#pxGrid').innerHTML = P.values.map(function (row, r) {
+        return row.map(function (v, c) {
+          return '<i style="background:rgb(' + v + ',' + v + ',' + v + ');color:' + (v > 120 ? '#1F1F1F' : '#fff') + ';--d:' + ((r * 8 + c) * 18) + 'ms">' + v + '</i>';
+        }).join('');
+      }).join('');
+    }
+    var t0 = 0, stepNow = 0;
+    SH.mri = function (sc, step) {
+      stepNow = step;
+      msgs.forEach(function (m) { m.classList.toggle('on', +m.dataset.k === step); });
+      if (step === 0) { t0 = 0; sls.forEach(function (s) { s.classList.remove('in'); }); }
+      else sls.forEach(function (s) { s.classList.add('in'); });
     };
+    SH.mri.reset = function () { t0 = 0; };
+    TICK.mri = function (t) {
+      if (stepNow !== 0) return;
+      if (!t0) t0 = t;
+      var T = 7, e = (t - t0) % (T + 2.5), p = Math.min(1, e / T);
+      scan.setAttribute('transform', 'translate(0 ' + (430 - p * 400).toFixed(1) + ')');
+      sls.forEach(function (s, i) { s.classList.toggle('in', p >= (i + .5) / N); });
+    };
+  })();
+
+  /* ---------------- 06 demencia: drag across CDR levels, the illustrated brain shrinks ---------------- */
+  (function () {
+    var prof = D.cdr_profile || [{ cdr: 0, mmse: 29, nwbv: .752 }, { cdr: .5, mmse: 25.6, nwbv: .729 }, { cdr: 1, mmse: 21.7, nwbv: .706 }, { cdr: 2, mmse: 15, nwbv: .684 }];
+    var lv = [['Sano', 'Non Demented', 'Memoria y vida diaria normales.'],
+      ['Muy leve', 'Very mild Dementia', 'Olvidos frecuentes, pero la persona sigue siendo independiente.'],
+      ['Leve', 'Mild Dementia', 'La pérdida de memoria ya complica el día a día.'],
+      ['Moderada', 'Moderate Dementia', 'Necesita ayuda para cuidarse.']];
+    /* brain outline + sulci, generated once */
+    var ctx = '', a, r;
+    for (a = 0; a <= 360; a += 3) {
+      var th = a * Math.PI / 180, k = 1 + .035 * Math.sin(9 * th) + .02 * Math.sin(17 * th + 1);
+      ctx += (a ? 'L' : 'M') + (150 * k * Math.sin(th)).toFixed(1) + ' ' + (-175 * k * Math.cos(th)).toFixed(1);
+    }
+    $('#dmCtx').setAttribute('d', ctx + 'Z');
+    var sul = $('#dmSul'), sulci = [];
+    for (a = 8; a < 360; a += 22) {
+      if (Math.abs(a - 180) < 12 || a < 10 || a > 350) continue;
+      var t1 = a * Math.PI / 180, x1 = 150 * Math.sin(t1), y1 = -175 * Math.cos(t1), x2 = x1 * .62, y2 = y1 * .62, mx = (x1 + x2) / 2 + 14 * Math.cos(t1), my = (y1 + y2) / 2 + 14 * Math.sin(t1);
+      sulci.push(svg('path', { d: 'M' + x1.toFixed(1) + ' ' + y1.toFixed(1) + 'Q' + mx.toFixed(1) + ' ' + my.toFixed(1) + ' ' + x2.toFixed(1) + ' ' + y2.toFixed(1) }, sul));
+    }
+    var B = $('#dmB'), V = $('#dmVen'), sld = $('#dmSld'), knob = $('#dmKnob'), stops = [];
+    lv.forEach(function (l, i) {
+      var s = document.createElement('div'); s.className = 'stp2'; s.style.left = (i / 3 * 100) + '%'; s.textContent = l[0];
+      sld.appendChild(s); stops.push(s);
+    });
+    var cur = 0, target = 0, drag = false;
+    function lerp(f, key) { var i = Math.min(2, Math.floor(f)), u = f - i; return prof[i][key] * (1 - u) + prof[i + 1][key] * u; }
+    function draw(f) {
+      var nw = lerp(f, 'nwbv'), mm = lerp(f, 'mmse'), sc = 1 - (prof[0].nwbv - nw) * 2.4;
+      B.setAttribute('transform', 'scale(' + sc.toFixed(3) + ')');
+      V.setAttribute('transform', 'scale(' + (.42 * (1 + f * .5)).toFixed(3) + ')');
+      sulci.forEach(function (p) { p.setAttribute('stroke-width', (5 + f * 4).toFixed(1)); });
+      knob.style.left = (f / 3 * 100) + '%';
+      $('#dmVol').style.transform = 'scaleX(' + nw.toFixed(3) + ')';
+      $('#dmMm').style.transform = 'scaleX(' + (mm / 30).toFixed(3) + ')';
+      set('dmVolN', Math.round(nw * 100) + '%'); set('dmMmN', Math.round(mm) + ' / 30');
+      var n = Math.round(f), L = lv[n];
+      set('dmLvl', L[0]); set('dmCdr', 'CDR ' + prof[n].cdr + ' · en el dataset: ' + L[1]); set('dmDsc', L[2]);
+      stops.forEach(function (s, i) { s.classList.toggle('on', i === n); });
+    }
+    function fromEvent(e) { var rc = sld.getBoundingClientRect(); return Math.max(0, Math.min(3, (e.clientX - rc.left) / rc.width * 3)); }
+    sld.addEventListener('pointerdown', function (e) { drag = true; sld.setPointerCapture(e.pointerId); target = cur = fromEvent(e); draw(cur); });
+    sld.addEventListener('pointermove', function (e) { if (drag && e.buttons) { target = cur = fromEvent(e); draw(cur); } });
+    sld.addEventListener('pointerup', function () { drag = false; if (window.DECK) DECK.setStep(Math.round(cur)); });
+    SH.demencia = function (sc, step) { target = step; };
+    SH.demencia.reset = function () { cur = target = 0; draw(0); };
+    TICK.demencia = function () { if (drag) return; if (Math.abs(target - cur) > .002) { cur += (target - cur) * .08; draw(cur); } };
+    draw(0);
   })();
 
   /* ---------------- 07 metodología: four stages, last semester's models and metrics ---------------- */
@@ -508,9 +651,6 @@
     }
     $('#finA').setAttribute('d', A); $('#finB').setAttribute('d', B);
   };
-
-  /* cover: the helix strands are drawn in place instead of flying in */
-  setTimeout(function () { $$('#helix path').forEach(function (p) { p.setAttribute('pathLength', 1); }); }, 0);
 
   /* ================= engine ================= */
   var stage = $('#stage');
