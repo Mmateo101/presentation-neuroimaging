@@ -1,0 +1,11 @@
+# Only the presentation (index.html + assets/) is deployed.
+# The notebook, its data listing, build tools and source material stay in the repo but not on the site.
+OASIS_EDA.ipynb
+data/
+tools/
+PlayBook/
+outputs/
+.work/
+.impeccable/
+*.pdf
+README.md

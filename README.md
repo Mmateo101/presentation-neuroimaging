@@ -14,7 +14,18 @@ Presentation and exploratory notebook for relaunching GenoBit's **Neuroimaging**
 
 ## Presentation
 
-Open `index.html` directly, or serve the folder (`python -m http.server`) / enable GitHub Pages.
+Open `index.html` directly, or serve the folder (`python -m http.server`).
+
+### Deploy on Vercel
+
+The site is static (no build step). `vercel.json` sets it up and `.vercelignore` keeps the notebook, data listing,
+tools and source material out of the deployment, so only `index.html` and `assets/` are published (~5 MB).
+
+1. In Vercel: **Add New → Project → Import** `Mmateo101/presentation-neuroimaging`.
+2. Framework preset: **Other**. Leave build command and output directory empty (they come from `vercel.json`).
+3. Deploy. Every push to `main` redeploys automatically.
+
+Or from a terminal with the Vercel CLI: `npx vercel` (preview) and `npx vercel --prod`.
 Navigation: click or →/Space to advance, ← to go back, `f` fullscreen, `#N` in the URL jumps to slide N.
 
 ## Notebook
