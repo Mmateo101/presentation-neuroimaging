@@ -15,6 +15,7 @@ Presentation and exploratory notebook for relaunching GenoBit's **Neuroimaging**
 ## Presentation
 
 Open `index.html` directly, or serve the folder (`python -m http.server`).
+Navigation: click or →/Space to advance, ← to go back, `f` fullscreen, `#N` in the URL jumps to slide N.
 
 ### Deploy on Vercel
 
@@ -26,7 +27,6 @@ tools and source material out of the deployment, so only `index.html` and `asset
 3. Deploy. Every push to `main` redeploys automatically.
 
 Or from a terminal with the Vercel CLI: `npx vercel` (preview) and `npx vercel --prod`.
-Navigation: click or →/Space to advance, ← to go back, `f` fullscreen, `#N` in the URL jumps to slide N.
 
 ## Notebook
 
