@@ -74,7 +74,11 @@
       A.forEach(function (o, i) { o.role = 0; o.u = i / (A.length - 1); });
       B.forEach(function (o, i) { o.role = 1; o.u = i / (B.length - 1); });
       var rungX = []; for (var x = 84; x <= 616; x += 28) { var s = Math.sin((x - 70) / 280 * 2 * Math.PI); if (Math.abs(s) >= .4) rungX.push(x); }
-      R.forEach(function (o, i) { o.role = 2; o.rung = (x = rungX[i % rungX.length], (x - 70) / 560); o.v = rnd() * 2 - 1; });
+      var perRung = Math.ceil(R.length / rungX.length);
+      R.forEach(function (o, i) {     /* points spread evenly along each rung so it reads as a solid bar */
+        var r = i % rungX.length, n = Math.floor(i / rungX.length);
+        o.role = 2; o.rung = (rungX[r] - 70) / 560; o.v = perRung > 1 ? -1 + 2 * n / (perRung - 1) : 0;
+      });
       out.forEach(function (o) { o.jx = (rnd() - .5) * 2; o.jy = (rnd() - .5) * 2; o.delay = rnd() * .5; });
       return out;
     }
@@ -102,23 +106,22 @@
     }
     var TEAL = [0, 112, 111], SKY = [169, 205, 229];
     function frame(e) {
-      /* 0-2.4 s gather into a loose wide helix; 2.4-4.6 s it twists and tightens; 4.6-6.2 s it settles into the logo */
+      /* the points gather into a wide, loose helix that keeps turning while it shrinks and condenses;
+         the turning slows down and stops exactly in the logo's pose, and the points become its strokes */
       g.clearRect(0, 0, 1920, 1080);
-      var gather = Math.min(1, e / 2.4), settle = ez(Math.max(0, Math.min(1, (e - 4.6) / 1.6)));
-      var H = {}; for (var k in LOGO) H[k] = mix(LOOSE[k], LOGO[k], settle);
-      var spin = e < 4.6 ? e * 2.2 : mix(4.6 * 2.2, Math.ceil(4.6 * 2.2 / (2 * Math.PI)) * 2 * Math.PI, settle);
-      var noise = 60 * (1 - ez(Math.max(0, Math.min(1, (e - 1.2) / 3.4))));
-      var fade = 1 - Math.max(0, Math.min(1, (e - 6.0) / .7));
-      if (fade <= 0) return false;
+      var gather = Math.min(1, e / 2.4), cond = ez(Math.max(0, Math.min(1, (e - .8) / 5.6)));
+      var H = {}; for (var k in LOGO) H[k] = mix(LOOSE[k], LOGO[k], cond);
+      var spin = 4 * 2 * Math.PI * (1 - Math.pow(1 - Math.min(1, e / 6.4), 3));
+      var noise = 60 * (1 - ez(Math.max(0, Math.min(1, (e - .6) / 4.2))));
+      var grow = Math.pow(cond, 2.5);
       for (var i = 0; i < pts.length; i++) {
         var o = pts[i], u = ez(Math.max(0, Math.min(1, (gather - o.delay * .6) / (1 - o.delay * .6))));
         var tg = target(o, H, spin, noise), x = mix(o.sx, tg[0], u), y = mix(o.sy, tg[1], u);
         var c = o.role === 1 ? SKY : TEAL, r = Math.round(mix(o.col[0], c[0], u)), gg = Math.round(mix(o.col[1], c[1], u)), b = Math.round(mix(o.col[2], c[2], u));
-        g.fillStyle = 'rgba(' + r + ',' + gg + ',' + b + ',' + (fade * (o.role === 2 ? .8 : 1)).toFixed(2) + ')';
-        var rad = mix(2.2, o.role === 2 ? 3.2 : 4.6, settle);
-        g.beginPath(); g.arc(x, y, rad, 0, 6.2832); g.fill();
+        g.fillStyle = 'rgb(' + r + ',' + gg + ',' + b + ')';
+        g.beginPath(); g.arc(x, y, mix(2.2, o.role === 2 ? 6.8 : 11, grow), 0, 6.2832); g.fill();
       }
-      return true;
+      return e < 6.6;
     }
     SH.cover = function (s, step) {
       if (step === 1 && !running) {
@@ -144,10 +147,9 @@
         alive = frame(e - LINE_T);
       }
       var d = e - LINE_T;
-      sc.classList.toggle('dna-done', d > 5.9);
-      sc.classList.toggle('pins', d > 6.5);
-      sc.classList.toggle('word', d > 7.4);
-      if (!alive && d > 8) running = false;
+      sc.classList.toggle('pins', d > 6.4);
+      sc.classList.toggle('word', d > 7.3);
+      if (!alive && d > 8) running = false;          /* the last frame stays on the canvas as the logo helix */
     };
   })();
 
@@ -524,24 +526,16 @@
     var cloud = $('#qCloud'), items = $$('span', cloud), cols = ['#00706F', '#3D358B', '#7D7ECA', '#1F1F1F', '#4E8FB8'];
     var seed = 11; function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
     function layout() {
-      var W = cloud.clientWidth, H = cloud.clientHeight, placed = [];
-      items.forEach(function (el, i) {
-        el.style.fontSize = Math.round(36 + rnd() * 26 - (el.textContent.length > 34 ? 4 : 0)) + 'px';
+      /* sizes, colours and drift vary per question; flex-wrap keeps every question on screen */
+      var order = items.map(function (el, i) { return { el: el, k: rnd() }; }).sort(function (a, b) { return a.k - b.k; });
+      order.forEach(function (o, i) {
+        var el = o.el;
+        el.style.order = i;
+        el.style.fontSize = (el.dataset.tip ? 30 : Math.round(30 + rnd() * 20 - (el.textContent.length > 34 ? 4 : 0))) + 'px';
         el.style.color = cols[i % cols.length];
         el.style.setProperty('--t', (7 + rnd() * 6).toFixed(1) + 's');
-        el.style.setProperty('--dx', ((rnd() - .5) * 26).toFixed(0) + 'px');
-        el.style.setProperty('--dy', ((rnd() - .5) * 22).toFixed(0) + 'px');
-        var w = el.offsetWidth, h = el.offsetHeight, a = rnd() * 6.28, r = 0, x, y, ok;
-        for (var k = 0; k < 2000; k++) {
-          x = W / 2 + r * 1.9 * Math.cos(a) - w / 2; y = H / 2 + r * Math.sin(a) - h / 2;
-          ok = x >= 0 && y >= 0 && x + w <= W && y + h <= H && placed.every(function (p) {
-            return x + w + 26 < p.x || p.x + p.w + 26 < x || y + h + 18 < p.y || p.y + p.h + 18 < y;
-          });
-          if (ok) break;
-          a += .35; r += 1.2;
-        }
-        placed.push({ x: x, y: y, w: w, h: h });
-        el.style.left = x + 'px'; el.style.top = y + 'px';
+        el.style.setProperty('--dx', ((rnd() - .5) * 22).toFixed(0) + 'px');
+        el.style.setProperty('--dy', ((rnd() - .5) * 16).toFixed(0) + 'px');
       });
     }
     (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(layout);
@@ -552,6 +546,18 @@
         cloud.classList.toggle('focus', !was);
         if (!was) el.classList.add('f');
       });
+    });
+    /* research questions: hovering shows the full idea */
+    var tip = $('#qTip'), stageEl = $('#stage');
+    items.filter(function (el) { return el.dataset.tip; }).forEach(function (el) {
+      el.addEventListener('mouseenter', function () {
+        tip.textContent = el.dataset.tip;
+        var x = el.offsetLeft + cloud.offsetLeft, y = el.offsetTop + cloud.offsetTop + el.offsetHeight + 16;
+        if (y + 220 > 1000) y = el.offsetTop + cloud.offsetTop - 16 - tip.offsetHeight;
+        tip.style.left = Math.min(Math.max(128, x), 1920 - 128 - 620) + 'px'; tip.style.top = y + 'px';
+        tip.classList.add('on');
+      });
+      el.addEventListener('mouseleave', function () { tip.classList.remove('on'); });
     });
     SH.preguntas = function (sc, step) {
       var k = 0;
